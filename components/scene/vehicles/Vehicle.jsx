@@ -16,7 +16,7 @@ import WheelParticles from './WheelParticles'
 import TireTracks from './TireTracks'
 import Wheels from './Wheels'
 import VehicleBody from './VehicleBody'
-
+const SCALE = 0.4
 // Vehicle component with physics
 const Vehicle = () => {
 	// Sync vehicle config changes to multiplayer server
