@@ -25,6 +25,27 @@ export default function TatersRacingScreen() {
 			</h1>
 			<p style={{ opacity: 0.75, marginBottom: 40 }}>Launch screen — track coming next</p>
 
+            <button
+				onClick={() => navigate('/taters/settings')}
+				style={{
+					background: 'transparent',
+					color: '#f4e6c8',
+					border: '1px solid #f4e6c855',
+					borderRadius: 8,
+					padding: '12px 48px',
+					fontSize: 16,
+					cursor: 'pointer',
+					minWidth: 260,
+					marginBottom: 16,
+				}}
+			>
+				Settings
+			</button>
+
+
+
+
+            
 			<button
 				onClick={() => navigate('/taters/races')}
 				style={{
@@ -61,22 +82,7 @@ export default function TatersRacingScreen() {
 				Home
 			</button>
 
-			<button
-				onClick={() => navigate('/taters/settings')}
-				style={{
-					background: 'transparent',
-					color: '#f4e6c8',
-					border: '1px solid #f4e6c855',
-					borderRadius: 8,
-					padding: '12px 48px',
-					fontSize: 16,
-					cursor: 'pointer',
-					minWidth: 260,
-					marginBottom: 16,
-				}}
-			>
-				Settings
-			</button>
+			
             
 		</div>
 	)
