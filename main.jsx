@@ -4,12 +4,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './components/App'
 
 import './assets/styles/global.css'
-
+import TatersRacingScreen from './components/ui/TatersRacingScreen'
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<App />} />
+                <Route path="/taters" element={<TatersRacingScreen />} />
                 <Route path="/:slug" element={<App />} />
             </Routes>
         </BrowserRouter>
