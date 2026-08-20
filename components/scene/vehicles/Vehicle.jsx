@@ -50,17 +50,17 @@ const Vehicle = () => {
 
 	// Create wheel configurations
 	const physicsWheels = useMemo(() => {
-		return wheelPositions.map((wheel, i) => ({
-			ref: wheelRefs[i],
-			axleCs: new Vector3(1, 0, 0),
-			position: new Vector3(...wheel.position),
-			suspensionDirection: new Vector3(0, -1, 0),
-			maxSuspensionTravel: 0.3,
-			suspensionRestLength: 0.1,
-			suspensionStiffness: 28,
-			radius: (config.tire_diameter * 2.54) / 100 / 2,
-		}))
-	}, [wheelPositions, config.tire_diameter])
+	return wheelPositions.map((wheel, i) => ({
+		ref: wheelRefs[i],
+		axleCs: new Vector3(1, 0, 0),
+		position: new Vector3(...wheel.position),
+		suspensionDirection: new Vector3(0, -1, 0),
+		maxSuspensionTravel: 0.3,
+		suspensionRestLength: 0.1,
+		suspensionStiffness: 28,
+		radius: (config.tire_diameter * 2.54) / 100 / 2,
+	}))
+}, [wheelPositions, config.tire_diameter])
 
 	// Use vehicle physics
 	const { vehicleController } = useVehiclePhysics(chassisRef, physicsWheels)
