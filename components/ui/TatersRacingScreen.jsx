@@ -41,9 +41,7 @@ export default function TatersRacingScreen() {
 				}}
 			>
 				PLAY
-			</button>
-
-			<button
+                <button
 				onClick={() => navigate('/')}
 				style={{
 					background: 'transparent',
@@ -71,10 +69,15 @@ export default function TatersRacingScreen() {
 			>
 				Settings
 			</button>
+			</button>
+
+			
+            
             
 
 				Back to Builder
 			</button>
+            
 		</div>
 	)
 }
