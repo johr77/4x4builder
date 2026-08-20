@@ -26,7 +26,7 @@ export default function TatersRacingScreen() {
 			<p style={{ opacity: 0.75, marginBottom: 40 }}>Launch screen — track coming next</p>
 
 			<button
-				onClick={() => alert('Track will go here next. Handling gets tuned after that.')}
+				onClick={() => navigate('/taters/races')}
 				style={{
 					background: '#c2410c',
 					color: 'white',
