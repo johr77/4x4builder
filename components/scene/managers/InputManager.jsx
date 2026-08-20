@@ -1,3 +1,4 @@
+import { getBindings } from '../../../store/controlBindings'
 import { useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import useInputStore from '../../../store/inputStore'
@@ -64,9 +65,9 @@ const InputManager = () => {
 	}, [setKey])
 
 	// Poll all input sources every frame and combine them
-	useFrame(() => {
-		// Start with touch joystick values (set directly by UI or XR manager, not polled)
+		useFrame(() => {
 		const touchInput = useInputStore.getState().touchInput
+		const keys = useInputStore.getState().keys
 		let input = {
 			leftStickX: touchInput.leftStickX,
 			leftStickY: touchInput.leftStickY,
@@ -82,7 +83,6 @@ const InputManager = () => {
 			rightBumper: false,
 		}
 
-		// Poll standard gamepad
 		const gamepad = navigator.getGamepads()[0]
 		if (gamepad) {
 			input.leftStickX = gamepad.axes[GAMEPAD.AXIS_LEFT_X] ?? 0
@@ -98,6 +98,20 @@ const InputManager = () => {
 			input.leftBumper = gamepad.buttons[GAMEPAD.BUTTON_LB]?.pressed ?? false
 			input.rightBumper = gamepad.buttons[GAMEPAD.BUTTON_RB]?.pressed ?? false
 		}
+
+		const bindings = getBindings()
+		const read = (binding) => {
+			if (!binding) return 0
+			if (binding.kind === 'key') return keys?.has?.(binding.key) ? 1 : 0
+			if (!gamepad) return 0
+			if (binding.kind === 'button') return gamepad.buttons[binding.index]?.value ?? 0
+			if (binding.kind === 'axis') return (gamepad.axes[binding.index] ?? 0) * (binding.sign ?? 1)
+			return 0
+		}
+
+		input.rightTrigger = Math.max(0, read(bindings.throttle))
+		input.leftTrigger = Math.max(0, read(bindings.brake))
+		input.leftStickX = read(bindings.steer)
 
 		setInput(input)
 	})

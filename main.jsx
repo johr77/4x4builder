@@ -6,7 +6,7 @@ import TatersRacingScreen from './components/ui/TatersRacingScreen'
 import RaceSelectScreen from './components/ui/RaceSelectScreen'
 import RaceTrack from './components/ui/RaceTrack'
 import './assets/styles/global.css'
-
+import SettingsScreen from './components/ui/SettingsScreen'
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
 		<BrowserRouter>
@@ -16,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 				<Route path='/taters/races' element={<RaceSelectScreen />} />
 				<Route path='/taters/race/1' element={<RaceTrack />} />
 				<Route path='/:slug' element={<App />} />
+                <Route path='/taters/settings' element={<SettingsScreen />} />
 			</Routes>
 		</BrowserRouter>
 	</React.StrictMode>
