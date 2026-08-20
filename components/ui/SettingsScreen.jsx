@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { DEFAULT_BINDINGS, getBindings, saveBindings, resetBindings } from '../../store/controlBindings'
+import { getBindings, saveBindings, resetBindings } from '../../store/controlBindings'
 
 const BUTTON_NAMES = ['A', 'B', 'X', 'Y', 'LB', 'RB', 'LT', 'RT', 'Back', 'Start', 'L3', 'R3', 'D-Up', 'D-Down', 'D-Left', 'D-Right']
 const AXIS_NAMES = ['Left Stick X', 'Left Stick Y', 'Right Stick X', 'Right Stick Y']
@@ -9,11 +9,13 @@ const ACTIONS = [
 	{ id: 'throttle', name: 'Gas' },
 	{ id: 'brake', name: 'Brake' },
 	{ id: 'steer', name: 'Steer' },
+	{ id: 'camera', name: 'Camera' },
 ]
 
 function labelFor(binding) {
 	if (!binding) return 'Not set'
 	if (binding.label) return binding.label
+	if (binding.kind === 'stick') return binding.label || 'Stick'
 	if (binding.kind === 'button') return BUTTON_NAMES[binding.index] || `Button ${binding.index}`
 	if (binding.kind === 'axis') return AXIS_NAMES[binding.index] || `Axis ${binding.index}`
 	if (binding.kind === 'key') return binding.key.toUpperCase()
@@ -41,6 +43,7 @@ export default function SettingsScreen() {
 			if (gp) {
 				for (let i = 0; i < gp.buttons.length; i++) {
 					if ((gp.buttons[i]?.value || 0) > 0.55) {
+						if (listening === 'camera') continue
 						setPending({
 							kind: 'button',
 							index: i,
@@ -52,6 +55,17 @@ export default function SettingsScreen() {
 				for (let i = 0; i < gp.axes.length; i++) {
 					const v = gp.axes[i] || 0
 					if (Math.abs(v) > 0.6) {
+						if (listening === 'camera') {
+							const isRight = i === 2 || i === 3
+							setPending({
+								kind: 'stick',
+								xAxis: isRight ? 2 : 0,
+								yAxis: isRight ? 3 : 1,
+								invertY: 1,
+								label: isRight ? 'Right Stick' : 'Left Stick',
+							})
+							return
+						}
 						const sign = v >= 0 ? 1 : -1
 						setPending({
 							kind: 'axis',
@@ -67,6 +81,7 @@ export default function SettingsScreen() {
 		}
 
 		const onKey = (e) => {
+			if (listening === 'camera') return
 			e.preventDefault()
 			const key = e.key.length === 1 ? e.key.toLowerCase() : e.key
 			setPending({ kind: 'key', key, label: key.length === 1 ? key.toUpperCase() : key })
@@ -239,7 +254,9 @@ export default function SettingsScreen() {
 						) : (
 							<>
 								<p style={{ fontSize: 18, fontWeight: 700 }}>
-									Press a button or move a stick for {ACTIONS.find((a) => a.id === listening)?.name}
+									{listening === 'camera'
+										? 'Move a stick for Camera'
+										: `Press a button or move a stick for ${ACTIONS.find((a) => a.id === listening)?.name}`}
 								</p>
 								<button
 									onClick={cancelListen}

@@ -108,6 +108,15 @@ const useVehicleGroup = () => {
 const OrbitCamera = ({ followSpeed, minGroundDistance, terrainMeshesCache, lastTerrainCacheFrame, transitionFromInfo }) => {
 	const cameraAutoRotate = useGameStore((state) => state.cameraAutoRotate)
 	const camera = useThree((state) => state.camera)
+		const look = useInputStore.getState().input
+		const lookX = look?.lookX || 0
+		const lookY = look?.lookY || 0
+		if (Math.abs(lookX) > 0.12 && typeof orbitControlsRef.current.rotateLeft === 'function') {
+			orbitControlsRef.current.rotateLeft(lookX * 1.8 * delta)
+		}
+		if (Math.abs(lookY) > 0.12 && typeof orbitControlsRef.current.rotateUp === 'function') {
+			orbitControlsRef.current.rotateUp(lookY * 1.2 * delta)
+		}
 	const orbitControlsRef = useRef()
 
 	const cameraPosition = useRef(new Vector3())

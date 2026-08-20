@@ -112,7 +112,13 @@ const InputManager = () => {
 		input.rightTrigger = Math.max(0, read(bindings.throttle))
 		input.leftTrigger = Math.max(0, read(bindings.brake))
 		input.leftStickX = read(bindings.steer)
-
+				if (bindings.camera?.kind === 'stick' && gamepad) {
+			input.lookX = gamepad.axes[bindings.camera.xAxis] ?? 0
+			input.lookY = (gamepad.axes[bindings.camera.yAxis] ?? 0) * (bindings.camera.invertY ?? 1)
+		} else {
+			input.lookX = input.rightStickX || 0
+			input.lookY = input.rightStickY || 0
+		}
 		setInput(input)
 	})
 
