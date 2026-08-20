@@ -53,12 +53,16 @@ const Vehicle = () => {
 	return wheelPositions.map((wheel, i) => ({
 		ref: wheelRefs[i],
 		axleCs: new Vector3(1, 0, 0),
-		position: new Vector3(...wheel.position),
+		position: new Vector3(
+			wheel.position[0] * SCALE,
+			wheel.position[1] * SCALE,
+			wheel.position[2] * SCALE
+		),
 		suspensionDirection: new Vector3(0, -1, 0),
-		maxSuspensionTravel: 0.3,
-		suspensionRestLength: 0.1,
+		maxSuspensionTravel: 0.3 * SCALE,
+		suspensionRestLength: 0.1 * SCALE,
 		suspensionStiffness: 28,
-		radius: (config.tire_diameter * 2.54) / 100 / 2,
+		radius: ((config.tire_diameter * 2.54) / 100 / 2) * SCALE,
 	}))
 }, [wheelPositions, config.tire_diameter])
 
