@@ -22,7 +22,58 @@ function DirtGround() {
 		</RigidBody>
 	)
 }
+function GuardrailFence({ size = 156 }) {
+	const half = size / 2
+	const wallH = 1.1
+	const steel = '#c5ced4'
+	const steelDark = '#8d969c'
+	const postColor = '#5b6268'
+	const postSpacing = 4
+	const postCount = Math.round(size / postSpacing)
 
+	const posts = []
+	for (let i = 0; i <= postCount; i++) {
+		const t = -half + (i * size) / postCount
+		posts.push([t, 0, half], [t, 0, -half], [half, 0, t], [-half, 0, t])
+	}
+
+	const rail = (pos, args, color) => (
+		<mesh position={pos} castShadow receiveShadow>
+			<boxGeometry args={args} />
+			<meshStandardMaterial color={color} metalness={0.85} roughness={0.35} />
+		</mesh>
+	)
+
+	return (
+		<>
+			{/* Invisible walls so you cannot drive off */}
+			<RigidBody type='fixed' colliders={false}>
+				<CuboidCollider args={[half, wallH / 2, 0.18]} position={[0, wallH / 2, half]} />
+				<CuboidCollider args={[half, wallH / 2, 0.18]} position={[0, wallH / 2, -half]} />
+				<CuboidCollider args={[0.18, wallH / 2, half]} position={[half, wallH / 2, 0]} />
+				<CuboidCollider args={[0.18, wallH / 2, half]} position={[-half, wallH / 2, 0]} />
+			</RigidBody>
+
+			{/* Posts */}
+			{posts.map((p, i) => (
+				<mesh key={i} position={[p[0], 0.55, p[2]]} castShadow>
+					<boxGeometry args={[0.12, 1.1, 0.12]} />
+					<meshStandardMaterial color={postColor} metalness={0.6} roughness={0.45} />
+				</mesh>
+			))}
+
+			{/* Two steel rails on each side */}
+			{rail([0, 0.38, half], [size, 0.16, 0.08], steel)}
+			{rail([0, 0.72, half], [size, 0.16, 0.08], steelDark)}
+			{rail([0, 0.38, -half], [size, 0.16, 0.08], steel)}
+			{rail([0, 0.72, -half], [size, 0.16, 0.08], steelDark)}
+			{rail([half, 0.38, 0], [0.08, 0.16, size], steel)}
+			{rail([half, 0.72, 0], [0.08, 0.16, size], steelDark)}
+			{rail([-half, 0.38, 0], [0.08, 0.16, size], steel)}
+			{rail([-half, 0.72, 0], [0.08, 0.16, size], steelDark)}
+		</>
+	)
+}
 export default function RaceTrack() {
 	const navigate = useNavigate()
 
@@ -40,6 +91,7 @@ export default function RaceTrack() {
 					<Physics>
 						<Vehicle />
 						<DirtGround />
+                        <GuardrailFence />
 					</Physics>
 				</Suspense>
 			</Canvas>
