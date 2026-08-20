@@ -98,7 +98,7 @@ const Vehicle = () => {
 		<>
 			<RigidBody ref={chassisRef} type='dynamic' colliders={false} canSleep={false} linearDamping={0.05} angularDamping={1}>
 				<CuboidCollider args={colliderArgs} position={colliderPosition} />
-				<group ref={chassisGroupRef} name='Vehicle'>
+				<group ref={chassisGroupRef} name='Vehicle' scale={[SCALE, SCALE, SCALE]}>
 					<VehicleAudio />
 					<Suspense fallback={null}>
 						<VehicleBody
