@@ -1,3 +1,6 @@
+import Sky from '../scene/environment/Sky'
+import Sun from '../scene/environment/Sun'
+import EnvMap from '../scene/environment/EnvMap'
 import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier'
@@ -26,11 +29,11 @@ export default function RaceTrack() {
 	return (
 		<div style={{ width: '100%', height: '100vh', position: 'relative', background: '#1a1208' }}>
 			<Canvas shadows camera={{ position: [-4, 2, 8], fov: 40 }}>
-				<color attach='background' args={['#87a0b8']} />
-				<fog attach='fog' args={['#87a0b8', 50, 140]} />
-				<ambientLight intensity={0.6} />
-				<hemisphereLight args={['#cfe8ff', '#8B6914', 0.45]} />
-				<directionalLight position={[40, 60, 20]} intensity={1.2} castShadow />
+							<fog attach='fog' args={['#dbebf9', 150, 450]} />
+				<ambientLight intensity={0.35} />
+				<Sun />
+				<Sky />
+				<EnvMap />
 				<Suspense fallback={<Loader />}>
 					<CameraManager />
 					<InputManager />
