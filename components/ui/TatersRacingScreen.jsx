@@ -41,34 +41,7 @@ export default function TatersRacingScreen() {
 				}}
 			>
 				PLAY
-                <button
-				onClick={() => navigate('/')}
-				style={{
-					background: 'transparent',
-					color: '#f4e6c8',
-					border: '1px solid #f4e6c855',
-					borderRadius: 8,
-					padding: '12px 48px',
-					fontSize: 16,
-					cursor: 'pointer',
-					minWidth: 260,
-				}}
-			>			<button
-				onClick={() => navigate('/taters/settings')}
-				style={{
-					background: 'transparent',
-					color: '#f4e6c8',
-					border: '1px solid #f4e6c855',
-					borderRadius: 8,
-					padding: '12px 48px',
-					fontSize: 16,
-					cursor: 'pointer',
-					minWidth: 260,
-					marginBottom: 16,
-				}}
-			>
-				Settings
-			</button>
+                
 			</button>
 
 			
