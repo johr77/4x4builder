@@ -36,13 +36,15 @@ export const useVehicleInput = () => {
 		// When chat is open, ignore keyboard input (but allow gamepad/touch)
 		const effectiveKeys = chatOpen ? new Set() : keys
 
-		// Throttle input (forward)
-		const throttleInput = clamp((effectiveKeys.has('ArrowUp') || effectiveKeys.has('w') ? 1 : 0) + (input.rightStickY < 0 ? -input.rightStickY : 0))
+		// Throttle input (forward) — keyboard + Right Trigger
+const throttleInput = clamp(
+	(effectiveKeys.has('ArrowUp') || effectiveKeys.has('w') ? 1 : 0) + input.rightTrigger
+)
 
-		// Brake input (backward/brake)
-		const brakeInput = clamp((effectiveKeys.has('ArrowDown') || effectiveKeys.has('s') ? 1 : 0) + (input.rightStickY > 0 ? input.rightStickY : 0))
-
-		// Drift mode (Shift key)
+// Brake input (backward/brake) — keyboard + Left Trigger
+const brakeInput = clamp(
+	(effectiveKeys.has('ArrowDown') || effectiveKeys.has('s') ? 1 : 0) + input.leftTrigger
+)
 		const isDrifting = effectiveKeys.has('Shift')
 
 		// Reset vehicle (R key or Y button) - detect press, not hold
