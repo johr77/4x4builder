@@ -1,3 +1,5 @@
+import Straight from '../track/Straight'
+import { SIZE, PARTS_ACROSS } from '../track/TrackConstants'
 import Sky from '../scene/environment/Sky'
 import Sun from '../scene/environment/Sun'
 import EnvMap from '../scene/environment/EnvMap'
@@ -92,6 +94,10 @@ export default function RaceTrack() {
 						<Vehicle />
 						<DirtGround />
                         <GuardrailFence />
+                        						{Array.from({ length: PARTS_ACROSS }, (_, i) => {
+							const z = -((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + i * SIZE
+							return <Straight key={i} position={[0, 0, z]} />
+						})}
 					</Physics>
 				</Suspense>
 			</Canvas>
