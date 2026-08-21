@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback } from 'react'
-import { Vector3, Raycaster, MathUtils, Quaternion, Matrix4 } from 'three'
+import { Vector3, Raycaster, MathUtils, Quaternion, Matrix4, Spherical } from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 
@@ -108,15 +108,6 @@ const useVehicleGroup = () => {
 const OrbitCamera = ({ followSpeed, minGroundDistance, terrainMeshesCache, lastTerrainCacheFrame, transitionFromInfo }) => {
 	const cameraAutoRotate = useGameStore((state) => state.cameraAutoRotate)
 	const camera = useThree((state) => state.camera)
-		const look = useInputStore.getState().input
-		const lookX = look?.lookX || 0
-		const lookY = look?.lookY || 0
-		if (Math.abs(lookX) > 0.12 && typeof orbitControlsRef.current.rotateLeft === 'function') {
-			orbitControlsRef.current.rotateLeft(lookX * 1.8 * delta)
-		}
-		if (Math.abs(lookY) > 0.12 && typeof orbitControlsRef.current.rotateUp === 'function') {
-			orbitControlsRef.current.rotateUp(lookY * 1.2 * delta)
-		}
 	const orbitControlsRef = useRef()
 
 	const cameraPosition = useRef(new Vector3())
@@ -188,6 +179,23 @@ const OrbitCamera = ({ followSpeed, minGroundDistance, terrainMeshesCache, lastT
 			camera.fov = newFov
 			camera.updateProjectionMatrix()
 			lastFov.current = newFov
+		}
+
+				const look = useInputStore.getState().input
+		const lookX = look?.lookX || 0
+		const lookY = look?.lookY || 0
+		if (Math.abs(lookX) > 0.12 || Math.abs(lookY) > 0.12) {
+			const offset = camera.position.clone().sub(orbitControlsRef.current.target)
+			const spherical = new Spherical().setFromVector3(offset)
+			spherical.theta -= lookX * 2.2 * delta
+			spherical.phi = MathUtils.clamp(
+				spherical.phi + lookY * 1.4 * delta,
+				orbitControlsRef.current.minPolarAngle,
+				orbitControlsRef.current.maxPolarAngle
+			)
+			spherical.makeSafe()
+			offset.setFromSpherical(spherical)
+			camera.position.copy(orbitControlsRef.current.target).add(offset)
 		}
 
 		orbitControlsRef.current.update()
