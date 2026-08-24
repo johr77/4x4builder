@@ -2,20 +2,20 @@ import { useMemo } from 'react'
 import { useLoader } from '@react-three/fiber'
 import { RigidBody, CuboidCollider } from '@react-three/rapier'
 import { PlaneGeometry, TextureLoader, RepeatWrapping, SRGBColorSpace, Float32BufferAttribute } from 'three'
-import { SIZE, LAYER_HEIGHT, WALL, START_PEAK } from './TrackConstants'
+import { SIZE, LAYER_HEIGHT, WALL, START_PEAK, START_LEN } from './TrackConstants'
 
-const SEGS_Z = 40
+const SEGS_Z = 56
 const SEGS_X = 10
-const WSEGS = 10
+const WSEGS = 16
 
 function startHeight(z) {
-	const half = SIZE / 2
+	const half = START_LEN / 2
 	const u = z + half
-	const a0 = 1.4
-	const up = 4.3
-	const flat = 3.2
-	const down = 4.3
-	const kickerStart = a0 + up + flat - 1.0
+	const a0 = 3.5
+	const up = 7.5
+	const flat = 10
+	const down = 7.5
+	const kickerStart = a0 + up + flat - 2.0
 
 	if (u < a0) return 0
 	if (u < a0 + up) {
@@ -26,25 +26,26 @@ function startHeight(z) {
 	if (u < a0 + up + flat) {
 		let h = START_PEAK
 		if (u > kickerStart) {
-			const k = (u - kickerStart) / 1.0
-			h += 0.35 * k * k
+			const k = (u - kickerStart) / 2.0
+			h += 0.4 * k * k
 		}
 		return h
 	}
 	if (u < a0 + up + flat + down) {
 		const t = (u - a0 - up - flat) / down
 		const s = t * t * (3 - 2 * t)
-		return (START_PEAK + 0.35) * (1 - s)
+		return (START_PEAK + 0.4) * (1 - s)
 	}
 	return 0
 }
 
-const PLATEAU_Z = -SIZE / 2 + 1.4 + 4.3 + 1.6
+const PLATEAU_Z = -START_LEN / 2 + 3.5 + 7.5 + 5
 
 export default function Start({ position = [0, 0, 0], rotation = 0, innerSign = 1 }) {
-	const half = SIZE / 2
+	const halfW = SIZE / 2
+	const halfL = START_LEN / 2
 	const inner = SIZE - WALL * 2
-	const innerX = innerSign * (half - 0.28)
+	const innerX = innerSign * (halfW - 0.28)
 	const outerX = -innerX
 
 	const [sand, sandNormal] = useLoader(TextureLoader, [
@@ -61,7 +62,7 @@ export default function Start({ position = [0, 0, 0], rotation = 0, innerSign = 
 	}, [sand, sandNormal])
 
 	const geometry = useMemo(() => {
-		const geo = new PlaneGeometry(inner, SIZE, SEGS_X, SEGS_Z)
+		const geo = new PlaneGeometry(inner, START_LEN, SEGS_X, SEGS_Z)
 		geo.rotateX(-Math.PI / 2)
 		const pos = geo.attributes.position
 		const uv = geo.attributes.uv
@@ -72,13 +73,11 @@ export default function Start({ position = [0, 0, 0], rotation = 0, innerSign = 
 		for (let i = 0; i < pos.count; i++) {
 			const x = pos.getX(i)
 			const z = pos.getZ(i)
-			const h = startHeight(z)
-			pos.setY(i, h)
-			const wx = originX(position, x, z, cos, sin)
-			const wz = originZ(position, x, z, cos, sin)
+			pos.setY(i, startHeight(z))
+			const wx = position[0] + x * cos + z * sin
+			const wz = position[2] - x * sin + z * cos
 			uv.setXY(i, wx / 6, wz / 6)
-			const wet = Math.min(1, h / START_PEAK)
-			colors.push(0.7 - wet * 0.15, 0.52 - wet * 0.12, 0.32)
+			colors.push(0.62, 0.46, 0.28)
 		}
 		geo.setAttribute('color', new Float32BufferAttribute(colors, 3))
 		geo.computeVertexNormals()
@@ -87,11 +86,10 @@ export default function Start({ position = [0, 0, 0], rotation = 0, innerSign = 
 
 	const wallSegs = []
 	for (let i = 0; i < WSEGS; i++) {
-		const z0 = -half + (i * SIZE) / WSEGS
-		const z1 = z0 + SIZE / WSEGS
+		const z0 = -halfL + (i * START_LEN) / WSEGS
+		const z1 = z0 + START_LEN / WSEGS
 		const z = (z0 + z1) / 2
-		const h = startHeight(z)
-		wallSegs.push({ z, len: SIZE / WSEGS + 0.05, h })
+		wallSegs.push({ z, len: START_LEN / WSEGS + 0.06, h: startHeight(z) })
 	}
 
 	return (
@@ -108,7 +106,6 @@ export default function Start({ position = [0, 0, 0], rotation = 0, innerSign = 
 				</mesh>
 			</RigidBody>
 
-			{/* Start line on the plateau */}
 			<group position={[0, START_PEAK + 0.36, PLATEAU_Z]}>
 				{[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5].map((i) => (
 					<mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[i * 0.62, 0, 0]}>
@@ -160,11 +157,4 @@ export default function Start({ position = [0, 0, 0], rotation = 0, innerSign = 
 			))}
 		</group>
 	)
-}
-
-function originX(position, x, z, cos, sin) {
-	return position[0] + x * cos + z * sin
-}
-function originZ(position, x, z, cos, sin) {
-	return position[2] - x * sin + z * cos
 }
