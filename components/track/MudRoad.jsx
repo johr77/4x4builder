@@ -3,7 +3,7 @@ import { useLoader } from '@react-three/fiber'
 import { RigidBody } from '@react-three/rapier'
 import { PlaneGeometry, TextureLoader, RepeatWrapping, SRGBColorSpace, Float32BufferAttribute } from 'three'
 
-export default function MudRoad({ width, length, origin = [0, 0, 0], yaw = 0 }) {
+export default function MudRoad({ width, length, origin = [0, 0, 0], yaw = 0, corner = false }) {
 	const [sand, sandNormal] = useLoader(TextureLoader, [
 		'/assets/images/ground/sand.jpg',
 		'/assets/images/ground/sand_normal.jpg',
@@ -23,24 +23,30 @@ export default function MudRoad({ width, length, origin = [0, 0, 0], yaw = 0 }) 
 		const pos = geo.attributes.position
 		const uv = geo.attributes.uv
 		const colors = []
-		const along0 = origin[0] * Math.sin(yaw) + origin[2] * Math.cos(yaw)
+		const cos = Math.cos(yaw)
+		const sin = Math.sin(yaw)
 
 		for (let i = 0; i < pos.count; i++) {
 			const x = pos.getX(i)
 			const z = pos.getZ(i)
-			const along = along0 + z
+			const wx = origin[0] + x * cos + z * sin
+			const wz = origin[2] - x * sin + z * cos
 
-			const rutA = Math.exp(-((x + 1.15) ** 2) / (2 * 0.38 ** 2))
-			const rutB = Math.exp(-((x - 1.15) ** 2) / (2 * 0.38 ** 2))
-			const wave = 0.82 + 0.18 * Math.sin(along * 1.7 + x * 0.4)
-			const depth = 0.22 * (rutA + rutB) * wave
+			const rutZ =
+				Math.exp(-((x + 1.15) ** 2) / (2 * 0.38 ** 2)) + Math.exp(-((x - 1.15) ** 2) / (2 * 0.38 ** 2))
+			const rutX = corner
+				? Math.exp(-((z + 1.15) ** 2) / (2 * 0.38 ** 2)) + Math.exp(-((z - 1.15) ** 2) / (2 * 0.38 ** 2))
+				: 0
+			const rut = Math.max(rutZ, rutX)
+			const wave = 0.82 + 0.18 * Math.sin(wx * 1.7 + wz * 0.4)
+			const depth = 0.22 * rut * wave
 			const lumps =
-				Math.sin(x * 1.4 + along * 0.55) * 0.045 +
-				Math.sin(along * 2.1 + x * 0.8) * 0.03 +
-				Math.sin((x + along) * 3.3) * 0.015
+				Math.sin(wx * 1.4 + wz * 0.55) * 0.045 +
+				Math.sin(wz * 2.1 + wx * 0.8) * 0.03 +
+				Math.sin((wx + wz) * 3.3) * 0.015
 
 			pos.setY(i, lumps - depth)
-			uv.setXY(i, x / 6, along / 6)
+			uv.setXY(i, wx / 6, wz / 6)
 
 			const wet = Math.min(1, depth * 4)
 			colors.push(0.55 + (1 - wet) * 0.45, 0.42 + (1 - wet) * 0.35, 0.28 + (1 - wet) * 0.2)
@@ -49,7 +55,7 @@ export default function MudRoad({ width, length, origin = [0, 0, 0], yaw = 0 }) 
 		geo.setAttribute('color', new Float32BufferAttribute(colors, 3))
 		geo.computeVertexNormals()
 		return geo
-	}, [width, length, origin, yaw])
+	}, [width, length, origin, yaw, corner])
 
 	return (
 		<RigidBody type='fixed' colliders='trimesh'>
