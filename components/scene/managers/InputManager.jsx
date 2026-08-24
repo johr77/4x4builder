@@ -100,27 +100,32 @@ const InputManager = () => {
 		}
 
 		const bindings = getBindings()
-		const read = (binding) => {
+				const read = (binding) => {
 			if (!binding) return 0
-			if (binding.kind === 'key') return keys?.has?.(binding.key) ? 1 : 0
-			if (!gamepad) return 0
-			if (binding.kind === 'button') return gamepad.buttons[binding.index]?.value ?? 0
+			let v = 0
+			if (binding.key && keys?.has?.(binding.key)) v = 1
+			if (binding.kind === 'key') return keys?.has?.(binding.key) ? 1 : v
+			if (!gamepad) return v
+			if (binding.kind === 'button') return Math.max(v, gamepad.buttons[binding.index]?.value ?? 0)
 			if (binding.kind === 'axis') return (gamepad.axes[binding.index] ?? 0) * (binding.sign ?? 1)
-			return 0
+			return v
 		}
 
 		input.rightTrigger = Math.max(0, read(bindings.throttle))
 		input.leftTrigger = Math.max(0, read(bindings.brake))
 		input.leftStickX = read(bindings.steer)
-				if (bindings.camera?.kind === 'stick' && gamepad) {
+		if (bindings.camera?.kind === 'stick' && gamepad) {
 			input.lookX = gamepad.axes[bindings.camera.xAxis] ?? 0
 			input.lookY = (gamepad.axes[bindings.camera.yAxis] ?? 0) * (bindings.camera.invertY ?? 1)
 		} else {
 			input.lookX = input.rightStickX || 0
 			input.lookY = input.rightStickY || 0
 		}
-				input.horn = read(bindings.horn) > 0.5
+		input.horn = read(bindings.horn) > 0.5
 		input.drift = read(bindings.drift) > 0.5
+		input.reset = read(bindings.reset) > 0.5
+		input.lights = read(bindings.lights) > 0.5
+		input.cameraCycle = read(bindings.cameraCycle) > 0.5
 		setInput(input)
 	})
 

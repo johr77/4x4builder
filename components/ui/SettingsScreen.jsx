@@ -1,18 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getBindings, saveBindings, resetBindings } from '../../store/controlBindings'
+import { CONTROL_ACTIONS, getBindings, saveBindings, resetBindings } from '../../store/controlBindings'
 
 const BUTTON_NAMES = ['A', 'B', 'X', 'Y', 'LB', 'RB', 'LT', 'RT', 'Back', 'Start', 'L3', 'R3', 'D-Up', 'D-Down', 'D-Left', 'D-Right']
 const AXIS_NAMES = ['Left Stick X', 'Left Stick Y', 'Right Stick X', 'Right Stick Y']
-
-const ACTIONS = [
-	{ id: 'throttle', name: 'Gas' },
-	{ id: 'brake', name: 'Brake' },
-	{ id: 'steer', name: 'Steer' },
-	{ id: 'camera', name: 'Camera' },
-	{ id: 'horn', name: 'Horn' },
-	{ id: 'drift', name: 'Drift' },
-]
 
 function labelFor(binding) {
 	if (!binding) return 'Not set'
@@ -104,7 +95,10 @@ export default function SettingsScreen() {
 
 	const accept = () => {
 		if (!listening || !pending) return
-		const next = { ...bindings, [listening]: pending }
+		const prev = bindings[listening] || {}
+		const nextBinding = { ...pending }
+		if (pending.kind !== 'key' && prev.key) nextBinding.key = prev.key
+		const next = { ...bindings, [listening]: nextBinding }
 		setBindings(next)
 		saveBindings(next)
 		setListening(null)
@@ -157,7 +151,7 @@ export default function SettingsScreen() {
 				Click an action, then press a button, key, or move a stick
 			</p>
 
-			{ACTIONS.map((action) => (
+			{CONTROL_ACTIONS.map((action) => (
 				<div key={action.id} style={row} onClick={() => startListen(action.id)}>
 					<strong>{action.name}</strong>
 					<span style={{ opacity: 0.85 }}>{labelFor(bindings[action.id])}</span>
@@ -221,7 +215,7 @@ export default function SettingsScreen() {
 						{pending ? (
 							<>
 								<p style={{ marginTop: 0 }}>
-									Set <strong>{ACTIONS.find((a) => a.id === listening)?.name}</strong> to
+									Set <strong>{CONTROL_ACTIONS.find((a) => a.id === listening)?.name}</strong> to
 								</p>
 								<p style={{ fontSize: 22, fontWeight: 700, margin: '8px 0 24px' }}>{pending.label}</p>
 								<button
@@ -257,8 +251,8 @@ export default function SettingsScreen() {
 							<>
 								<p style={{ fontSize: 18, fontWeight: 700 }}>
 									{listening === 'camera'
-										? 'Move a stick for Camera'
-										: `Press a button or move a stick for ${ACTIONS.find((a) => a.id === listening)?.name}`}
+										? 'Move a stick for Camera Look'
+										: `Press a button or key for ${CONTROL_ACTIONS.find((a) => a.id === listening)?.name}`}
 								</p>
 								<button
 									onClick={cancelListen}

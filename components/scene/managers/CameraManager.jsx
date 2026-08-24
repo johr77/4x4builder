@@ -513,7 +513,7 @@ const CameraManager = ({ followSpeed = 8, minGroundDistance = 0.5, forceMode = n
 	useFrame(() => {
 		const { keys, input } = useInputStore.getState()
 		// C key or Y button to cycle cameras
-		const switchPressed = keys.has('c') || input.buttonY
+		const switchPressed = !!input.cameraCycle
 
 		if (forceMode) return
 		if (switchPressed && !keyPressedLastFrame.current) {

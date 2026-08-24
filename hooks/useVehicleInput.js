@@ -45,15 +45,15 @@ const throttleInput = clamp(
 const brakeInput = clamp(
 	(effectiveKeys.has('ArrowDown') || effectiveKeys.has('s') ? 1 : 0) + input.leftTrigger
 )
-		const isDrifting = effectiveKeys.has('Shift') || !!input.drift
+		const isDrifting = !!input.drift
 
 		// Reset vehicle (R key or Y button) - detect press, not hold
-		const resetPressed = effectiveKeys.has('r') || input.buttonB
+		const resetPressed = !!input.reset
 		const shouldReset = resetPressed && !resetPressedLastFrame.current
 		resetPressedLastFrame.current = resetPressed
 
 		// Lights toggle (L key) - detect press, not hold
-		const lightsKeyPressed = effectiveKeys.has('l')
+		const lightsKeyPressed = !!input.lights
 		const shouldToggleLights = lightsKeyPressed && !lightsKeyPressedLastFrame.current
 		lightsKeyPressedLastFrame.current = lightsKeyPressed
 
@@ -63,7 +63,7 @@ const brakeInput = clamp(
 		brakePressedLastFrame.current = brakePressed
 
 		// Horn input (H key or left bumper) - continuous while held
-		const hornActive = effectiveKeys.has('h') || !!input.horn
+		const hornActive = !!input.horn
 
 		// Calculate keyboard steering target (-1, 0, or 1)
 		const keyboardSteerTarget = (effectiveKeys.has('ArrowRight') || effectiveKeys.has('d') ? -1 : 0) + (effectiveKeys.has('ArrowLeft') || effectiveKeys.has('a') ? 1 : 0)

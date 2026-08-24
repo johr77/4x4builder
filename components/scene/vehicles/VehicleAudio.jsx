@@ -464,7 +464,7 @@ const VehicleAudio = memo(({ isRemote = false, getRemoteState = null }) => {
 			const { keys, input } = useInputStore.getState()
 			const chatOpen = useMultiplayerStore.getState().chatOpen
 			const effectiveKeys = chatOpen ? EMPTY_SET : keys
-			hornActive = effectiveKeys.has('h') || input.leftBumper
+			hornActive = !!input.horn
 
 			// Update mutable state for network broadcast (avoids Zustand update in render loop)
 			if (hornActive !== lastHornState.current) {
