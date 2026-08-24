@@ -93,7 +93,12 @@ export default function RaceTrack() {
 				<CameraManager forceMode='chase' chaseOffset={[0, 1.6, -5]} chaseLookAt={[0, 0.7, 4]} />
 					<InputManager />
 					<Physics>
-					<Vehicle spawnPosition={[0, 0.8, spawnZ]} spawnRotation={[0, Math.PI / 2, 0]} />
+					<Vehicle spawnPosition={[
+						-((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + 4 * SIZE,
+						7.8,
+						-((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + 4 * SIZE,
+					]}
+					spawnRotation={[0, 0, 0]} />
 						<DirtGround />
                         <GuardrailFence />
                         <TrackLoop />
