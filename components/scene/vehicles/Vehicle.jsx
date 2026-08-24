@@ -94,12 +94,13 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// colliderArgs
 	// 1st (0.9),half width,Left–right. Full width = 1.8,
 	// Bigger = hits walls sooner. Smaller = can clip through walls
+	// .7 starts climbing walls
 	// 2nd (0.5),half height,Up–down. Full height = 1.0,
 	// Bigger = more top-heavy, scrapes ground. Smaller = less scrape, less wall contact
 	// 8/24/26 lifts car on acceleration, lifts car on braking, .5 seem right
 	// 3rd (wheelbase / 2 + axleHeight),half length,Front–back,
 	// Bigger = nose/tail hit jumps and ramps sooner
-	const colliderArgs = useMemo(() => [.7, 0.5, wheelbase / 2 + axleHeight], [wheelbase, axleHeight])
+	const colliderArgs = useMemo(() => [.75, 0.5, wheelbase / 2 + axleHeight], [wheelbase, axleHeight])
 	// colliderPosition
 	// 1st (0),left / right,Keep 0,—
 	// 2nd (1),up / down,Center of the box. 
