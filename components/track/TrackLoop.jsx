@@ -3,25 +3,27 @@ import Corner from './Corner'
 import { SIZE, PARTS_ACROSS } from './TrackConstants'
 
 const pos = (i) => -((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + i * SIZE
-const last = PARTS_ACROSS - 1
+
+const W = 4
+const E = 5
+const S = 2
+const N = 7
 
 export default function TrackLoop() {
-	const straights = []
+	const tiles = []
 
-	for (let i = 1; i < last; i++) {
-				straights.push(<Straight key={`s-${i}`} position={[pos(i), 0, pos(0)]} rotation={Math.PI / 2} innerSign={-1} />)
-		straights.push(<Straight key={`n-${i}`} position={[pos(i), 0, pos(last)]} rotation={Math.PI / 2} innerSign={1} />)
-		straights.push(<Straight key={`w-${i}`} position={[pos(0), 0, pos(i)]} innerSign={1} />)
-		straights.push(<Straight key={`e-${i}`} position={[pos(last), 0, pos(i)]} innerSign={-1} />)
+	// Two corners side by side — south hairpin
+	tiles.push(<Corner key='s-w' position={[pos(W), 0, pos(S)]} rotation={Math.PI} />)
+	tiles.push(<Corner key='s-e' position={[pos(E), 0, pos(S)]} rotation={Math.PI / 2} />)
+
+	// Two corners side by side — north hairpin
+	tiles.push(<Corner key='n-w' position={[pos(W), 0, pos(N)]} rotation={-Math.PI / 2} />)
+	tiles.push(<Corner key='n-e' position={[pos(E), 0, pos(N)]} rotation={0} />)
+
+	for (let j = S + 1; j < N; j++) {
+		tiles.push(<Straight key={`w-${j}`} position={[pos(W), 0, pos(j)]} innerSign={1} />)
+		tiles.push(<Straight key={`e-${j}`} position={[pos(E), 0, pos(j)]} innerSign={-1} />)
 	}
 
-	return (
-		<>
-			{straights}
-			<Corner position={[pos(last), 0, pos(last)]} rotation={0} />
-			<Corner position={[pos(last), 0, pos(0)]} rotation={Math.PI / 2} />
-			<Corner position={[pos(0), 0, pos(0)]} rotation={Math.PI} />
-			<Corner position={[pos(0), 0, pos(last)]} rotation={-Math.PI / 2} />
-		</>
-	)
+	return <>{tiles}</>
 }
