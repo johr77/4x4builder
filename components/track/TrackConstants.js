@@ -3,7 +3,7 @@ export const PARTS_ACROSS = 10
 export const SIZE = MAP_SIZE / PARTS_ACROSS // 15.6 — 10 parts between fences
 export const LAYERS = 5
 export const LAYER_HEIGHT = 3
-export const START_PEAK = LAYER_HEIGHT * 2 // 6 — start-part plateau (level 3)
+export const START_PEAK = LAYER_HEIGHT // 3 — one level up
 export const OUTER_HEIGHT = LAYERS * LAYER_HEIGHT // 15
 export const WALL = 0.5
 
