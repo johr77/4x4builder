@@ -345,7 +345,7 @@ const FirstPersonCamera = () => {
 }
 
 // Chase camera controller
-const ChaseCamera = ({ terrainMeshesCache, lastTerrainCacheFrame }) => {
+const ChaseCamera = ({ terrainMeshesCache, lastTerrainCacheFrame, offset = [0, 3.5, -8], lookAtOffset = [0, 1.5, 5] }) => {
 	const camera = useThree((state) => state.camera)
 
 	const currentPosition = useRef(camera.position.clone())
@@ -374,12 +374,12 @@ const ChaseCamera = ({ terrainMeshesCache, lastTerrainCacheFrame }) => {
 		vehicleGroup.getWorldQuaternion(tempQuat.current)
 
 		// Calculate ideal camera position (behind and up)
-		idealOffset.current.set(0, 3.5, -8)
+		idealOffset.current.set(offset[0], offset[1], offset[2])
 		idealOffset.current.applyQuaternion(tempQuat.current)
 		idealOffset.current.add(tempVec.current)
 
 		// Calculate ideal look target (slightly ahead of vehicle)
-		idealLookAt.current.set(0, 1.5, 5)
+		idealLookAt.current.set(lookAtOffset[0], lookAtOffset[1], lookAtOffset[2])
 		idealLookAt.current.applyQuaternion(tempQuat.current)
 		idealLookAt.current.add(tempVec.current)
 
@@ -471,8 +471,9 @@ const InfoCamera = () => {
 }
 
 // Main camera manager - handles switching between camera modes
-const CameraManager = ({ followSpeed = 8, minGroundDistance = 0.5 }) => {
+const CameraManager = ({ followSpeed = 8, minGroundDistance = 0.5, forceMode = null, chaseOffset, chaseLookAt }) => {
 	const cameraMode = useGameStore((state) => state.cameraMode)
+	const mode = forceMode || cameraMode
 	const setCameraMode = useGameStore((state) => state.setCameraMode)
 	const infoMode = useGameStore((state) => state.infoMode)
 	const prevInfoMode = useRef(infoMode)
@@ -501,6 +502,7 @@ const CameraManager = ({ followSpeed = 8, minGroundDistance = 0.5 }) => {
 		// C key or Y button to cycle cameras
 		const switchPressed = keys.has('c') || input.buttonY
 
+		if (forceMode) return
 		if (switchPressed && !keyPressedLastFrame.current) {
 			cycleCameraMode()
 		}
@@ -513,11 +515,18 @@ const CameraManager = ({ followSpeed = 8, minGroundDistance = 0.5 }) => {
 	}
 
 	// Render the appropriate camera controller based on current mode
-	switch (cameraMode) {
+		switch (mode) {
 		case CameraMode.FIRST_PERSON:
 			return <FirstPersonCamera />
 		case CameraMode.CHASE:
-			return <ChaseCamera terrainMeshesCache={terrainMeshesCache} lastTerrainCacheFrame={lastTerrainCacheFrame} />
+			return (
+				<ChaseCamera
+					terrainMeshesCache={terrainMeshesCache}
+					lastTerrainCacheFrame={lastTerrainCacheFrame}
+					offset={chaseOffset}
+					lookAtOffset={chaseLookAt}
+				/>
+			)
 		case CameraMode.ORBIT:
 		default:
 			return (
