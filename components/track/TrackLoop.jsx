@@ -1,9 +1,8 @@
 import Straight from './Straight'
 import Corner from './Corner'
 import Start from './Start'
-import { SIZE, PARTS_ACROSS } from './TrackConstants'
-import Start from './Start'
 import Hill from './Hill'
+import { SIZE, PARTS_ACROSS } from './TrackConstants'
 
 const pos = (i) => -((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + i * SIZE
 
