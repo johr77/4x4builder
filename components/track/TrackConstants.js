@@ -4,7 +4,6 @@ export const SIZE = MAP_SIZE / PARTS_ACROSS // 15.6 — 10 parts between fences
 export const LAYERS = 5
 export const LAYER_HEIGHT = 3
 export const START_PEAK = 1.25 // dirt hill height (not a full fence layer)
-export const START_LEN = SIZE * 2 // start part is two tiles long
 export const OUTER_HEIGHT = LAYERS * LAYER_HEIGHT // 15
 export const WALL = 0.5
 

@@ -2,6 +2,8 @@ import Straight from './Straight'
 import Corner from './Corner'
 import Start from './Start'
 import { SIZE, PARTS_ACROSS } from './TrackConstants'
+import Start from './Start'
+import Hill from './Hill'
 
 const pos = (i) => -((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + i * SIZE
 
@@ -29,9 +31,16 @@ export default function TrackLoop() {
 		/>
 	)
 
-	for (let j = S + 1; j < N; j++) {
-		if (j === 4 || j === 5) continue
-		tiles.push(<Straight key={`w-${j}`} position={[pos(W), 0, pos(j)]} innerSign={1} />)
+		for (let j = S + 1; j < N; j++) {
+		if (j === 3) {
+			tiles.push(<Hill key='hill-up' position={[pos(W), 0, pos(j)]} innerSign={1} />)
+		} else if (j === 4) {
+			tiles.push(<Start key='start' position={[pos(W), 0, pos(j)]} innerSign={1} />)
+		} else if (j === 5) {
+			tiles.push(<Hill key='hill-down' position={[pos(W), 0, pos(j)]} rotation={Math.PI} innerSign={-1} />)
+		} else {
+			tiles.push(<Straight key={`w-${j}`} position={[pos(W), 0, pos(j)]} innerSign={1} />)
+		}
 		tiles.push(<Straight key={`e-${j}`} position={[pos(E), 0, pos(j)]} innerSign={-1} />)
 	}
 
