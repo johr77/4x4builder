@@ -10,6 +10,8 @@ const ACTIONS = [
 	{ id: 'brake', name: 'Brake' },
 	{ id: 'steer', name: 'Steer' },
 	{ id: 'camera', name: 'Camera' },
+	{ id: 'horn', name: 'Horn' },
+	{ id: 'drift', name: 'Drift' },
 ]
 
 function labelFor(binding) {

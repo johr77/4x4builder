@@ -119,6 +119,8 @@ const InputManager = () => {
 			input.lookX = input.rightStickX || 0
 			input.lookY = input.rightStickY || 0
 		}
+				input.horn = read(bindings.horn) > 0.5
+		input.drift = read(bindings.drift) > 0.5
 		setInput(input)
 	})
 
