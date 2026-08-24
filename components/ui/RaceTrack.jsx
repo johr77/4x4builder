@@ -94,8 +94,7 @@ export default function RaceTrack() {
 						<DirtGround />
                         <GuardrailFence />
                         <TrackLoop />
-						})}
-					</Physics>
+						</Physics>
 				</Suspense>
 			</Canvas>
 
