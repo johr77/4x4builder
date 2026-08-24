@@ -92,14 +92,19 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 
 	// Collider props
 	// colliderArgs
-	// 1st (0.9),half width,Left–right. Full width = 1.8,Bigger = hits walls sooner. Smaller = can clip through walls
-	// 2nd (0.5),half height,Up–down. Full height = 1.0,"Bigger = more top-heavy, scrapes ground. Smaller = less scrape, less wall contact
-	// 3rd (wheelbase / 2 + axleHeight),half length,Front–back,Bigger = nose/tail hit jumps and ramps sooner
+	// 1st (0.9),half width,Left–right. Full width = 1.8,
+	// Bigger = hits walls sooner. Smaller = can clip through walls
+	// 2nd (0.5),half height,Up–down. Full height = 1.0,
+	// Bigger = more top-heavy, scrapes ground. Smaller = less scrape, less wall contact
+	// 3rd (wheelbase / 2 + axleHeight),half length,Front–back,
+	// Bigger = nose/tail hit jumps and ramps sooner
+	const colliderArgs = useMemo(() => [0.9, 0.1, wheelbase / 2 + axleHeight], [wheelbase, axleHeight])
 	// colliderPosition
 	// 1st (0),left / right,Keep 0,—
-	// 2nd (1),up / down,Center of the box. Lower = more stable, more ground scrape. Higher = less scrape, more tippy
+	// 2nd (1),up / down,Center of the box. 
+	// 8/24/26 - .65 seems right (.7 still spins(rarly), .6 hits spots in ground.)
+	// Lower = more stable, more ground scrape. Higher = less scrape, more tippy
 	// 3rd (0),forward / back,Keep 0,—
-	const colliderArgs = useMemo(() => [0.9, 0.5, wheelbase / 2 + axleHeight], [wheelbase, axleHeight])
 	const colliderPosition = useMemo(() => [0, .65, 0], [])
 
 	return (
