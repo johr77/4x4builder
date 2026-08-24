@@ -354,6 +354,8 @@ const ChaseCamera = ({ terrainMeshesCache, lastTerrainCacheFrame, offset = [0, 3
 	const minGroundDistance = 0.5
 	const targetFov = 24 // Default FOV for chase camera
 	const lastFov = useRef(camera.fov)
+	const lookYaw = useRef(0)
+	const lookPitch = useRef(0)
 
 	// Temp vectors
 	const tempVec = useRef(new Vector3())
@@ -372,9 +374,20 @@ const ChaseCamera = ({ terrainMeshesCache, lastTerrainCacheFrame, offset = [0, 3
 		// Get vehicle world position and rotation
 		vehicleGroup.getWorldPosition(tempVec.current)
 		vehicleGroup.getWorldQuaternion(tempQuat.current)
-
+		const look = useInputStore.getState().input
+		const lx = look?.lookX || 0
+		const ly = look?.lookY || 0
+		if (Math.abs(lx) > 0.12 || Math.abs(ly) > 0.12) {
+			lookYaw.current -= lx * 1.6 * delta
+			lookPitch.current = MathUtils.clamp(lookPitch.current + ly * 1.1 * delta, -0.45, 0.55)
+		} else {
+			lookYaw.current = MathUtils.damp(lookYaw.current, 0, 7, delta)
+			lookPitch.current = MathUtils.damp(lookPitch.current, 0, 7, delta)
+		}
 		// Calculate ideal camera position (behind and up)
 		idealOffset.current.set(offset[0], offset[1], offset[2])
+		idealOffset.current.applyAxisAngle({ x: 0, y: 1, z: 0 }, lookYaw.current)
+		idealOffset.current.y += lookPitch.current * 2.5
 		idealOffset.current.applyQuaternion(tempQuat.current)
 		idealOffset.current.add(tempVec.current)
 
