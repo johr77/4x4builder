@@ -53,7 +53,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	return wheelPositions.map((wheel, i) => ({
 		ref: wheelRefs[i],
 		axleCs: new Vector3(1, 0, 0),
-		position: new Vector3(wheel.position[0] * 0.6, wheel.position[1], wheel.position[2]),
+		position: new Vector3(wheel.position[0] * 0.7, wheel.position[1], wheel.position[2]),
 		suspensionDirection: new Vector3(0, -1, 0),
 		maxSuspensionTravel: 0.3,
 		suspensionRestLength: 0.1,
