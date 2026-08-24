@@ -1,4 +1,5 @@
 import TrackLoop from '../track/TrackLoop'
+import { SIZE, PARTS_ACROSS } from '../track/TrackConstants'
 import Sky from '../scene/environment/Sky'
 import Sun from '../scene/environment/Sun'
 import EnvMap from '../scene/environment/EnvMap'
@@ -75,6 +76,7 @@ function GuardrailFence({ size = 156 }) {
 		</>
 	)
 }
+const spawnZ = -((PARTS_ACROSS * SIZE) / 2) + SIZE / 2
 export default function RaceTrack() {
 	const navigate = useNavigate()
 
@@ -90,7 +92,7 @@ export default function RaceTrack() {
 					<CameraManager />
 					<InputManager />
 					<Physics>
-						<Vehicle />
+					<Vehicle spawnPosition={[0, 0.8, spawnZ]} spawnRotation={[0, Math.PI / 2, 0]} />
 						<DirtGround />
                         <GuardrailFence />
                         <TrackLoop />

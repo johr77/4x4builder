@@ -18,7 +18,7 @@ import Wheels from './Wheels'
 import VehicleBody from './VehicleBody'
 const SCALE = 0.25
 // Vehicle component with physics
-const Vehicle = () => {
+const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// Sync vehicle config changes to multiplayer server
 	useVehicleSync()
 
@@ -96,7 +96,8 @@ const Vehicle = () => {
 
 	return (
 		<>
-			<RigidBody ref={chassisRef} type='dynamic' colliders={false} canSleep={false} linearDamping={0.05} angularDamping={1}>
+			<RigidBody ref={chassisRef} type='dynamic' position={spawnPosition}
+							rotation={spawnRotation} colliders={false} canSleep={false} linearDamping={0.05} angularDamping={1}>
 				<CuboidCollider args={colliderArgs} position={colliderPosition} />
 				<group ref={chassisGroupRef} name='Vehicle' scale={[SCALE, SCALE, SCALE]}>
 					<VehicleAudio />
@@ -110,6 +111,7 @@ const Vehicle = () => {
 							roughness={config.roughness}
 							addons={config.addons}
 							lighting={config.lighting}
+							
 						/>
 					</Suspense>
 					<Wheels
