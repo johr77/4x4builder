@@ -8,12 +8,11 @@ export default function Straight({ position = [0, 0, 0], rotation = 0 }) {
 
 	return (
 		<group position={position} rotation={[0, rotation, 0]}>
-			<MudRoad width={inner} length={SIZE} />
+			<MudRoad width={inner} length={SIZE} origin={position} yaw={rotation} />
 
 			<RigidBody type='fixed' colliders={false}>
 				<CuboidCollider args={[WALL / 2, OUTER_HEIGHT / 2, half]} position={[-(half - WALL / 2), OUTER_HEIGHT / 2, 0]} />
 				<CuboidCollider args={[WALL / 2, OUTER_HEIGHT / 2, half]} position={[half - WALL / 2, OUTER_HEIGHT / 2, 0]} />
-				<CuboidCollider args={[half, 0.2, half]} position={[0, OUTER_HEIGHT, 0]} />
 			</RigidBody>
 
 			<mesh position={[-(half - WALL / 2), OUTER_HEIGHT / 2, 0]} castShadow receiveShadow>
@@ -31,10 +30,6 @@ export default function Straight({ position = [0, 0, 0], rotation = 0 }) {
 			<mesh position={[half - WALL - 0.02, OUTER_HEIGHT / 2, 0]}>
 				<boxGeometry args={[0.04, OUTER_HEIGHT - 0.4, SIZE - 0.2]} />
 				<meshStandardMaterial color={COLORS.inner} />
-			</mesh>
-			<mesh position={[0, OUTER_HEIGHT, 0]} castShadow receiveShadow>
-				<boxGeometry args={[SIZE, 0.4, SIZE]} />
-				<meshStandardMaterial color={COLORS.outer} />
 			</mesh>
 		</group>
 	)
