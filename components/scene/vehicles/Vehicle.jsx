@@ -94,7 +94,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// colliderArgs
 	// 1st (0.9),half width,Left–right. Full width = 1.8,
 	// Bigger = hits walls sooner. Smaller = can clip through walls
-	// .7 starts climbing walls
+	// 8/24/26 - .7 starts climbing walls, .75 starts to climb (rarely), .76 for now
 	// 2nd (0.5),half height,Up–down. Full height = 1.0,
 	// Bigger = more top-heavy, scrapes ground. Smaller = less scrape, less wall contact
 	// 8/24/26 lifts car on acceleration, lifts car on braking, .5 seem right
