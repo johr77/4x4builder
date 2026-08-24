@@ -45,7 +45,7 @@ export default function MudRoad({ width, length, origin = [0, 0, 0], yaw = 0, co
 				Math.sin(wz * 2.1 + wx * 0.8) * 0.03 +
 				Math.sin((wx + wz) * 3.3) * 0.015
 
-			pos.setY(i, lumps - depth)
+			pos.setY(i, Math.max(lumps - depth, -0.12))
 			uv.setXY(i, wx / 6, wz / 6)
 
 			const wet = Math.min(1, depth * 4)

@@ -19,7 +19,8 @@ function DirtGround() {
 			<CuboidCollider args={[80, 0.5, 80]} position={[0, -0.5, 0]} />
 			<mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow name='Terrain'>
 				<planeGeometry args={[160, 160]} />
-				<meshStandardMaterial color='#9a6b32' />
+				<meshStandardMaterial color='#2a1c10' />
+				<mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.8, 0]} receiveShadow name='Terrain'></mesh>
 			</mesh>
 		</RigidBody>
 	)
