@@ -1,8 +1,9 @@
 import { RigidBody, CuboidCollider } from '@react-three/rapier'
 import { SIZE, LAYER_HEIGHT, WALL } from './TrackConstants'
 import MudRoad from './MudRoad'
-import InnerWall from './InnerWall'
 
+const R = 2.4
+const WALL_IN = 0.28
 const OUTER_R = SIZE - 0.22
 const OSEG = 12
 
@@ -11,8 +12,11 @@ export default function Corner({ position = [0, 0, 0], rotation = 0 }) {
 	const cx = -half
 	const cz = -half
 	const inner = SIZE - WALL * 2
-	const innerX = -(half - 0.28)
-	const innerZ = -(half - 0.28)
+	const ix = cx + WALL_IN
+	const iz = cz + WALL_IN
+	const filX = ix + R
+	const filZ = iz + R
+	const leg = R + WALL_IN + 0.5
 
 	const oSegs = []
 	for (let i = 0; i < OSEG; i++) oSegs.push(((i + 0.5) / OSEG) * (Math.PI / 2))
@@ -23,29 +27,34 @@ export default function Corner({ position = [0, 0, 0], rotation = 0 }) {
 
 	return (
 		<group position={position} rotation={[0, rotation, 0]}>
-			{/* Same mud as the straights, in an L so all 4 corners match */}
 			<MudRoad width={inner} length={SIZE + 0.35} origin={position} yaw={rotation} />
 			<group rotation={[0, Math.PI / 2, 0]}>
 				<MudRoad width={inner} length={SIZE + 0.35} origin={position} yaw={rotation + Math.PI / 2} />
 			</group>
 
-			{/* Inner walls — same piece as the straight, so they meet */}
-			<group position={[innerX, 0, 0]}>
-				<InnerWall />
-			</group>
-			<group position={[0, 0, innerZ]} rotation={[0, Math.PI / 2, 0]}>
-				<InnerWall />
-			</group>
+			{/* Short inner legs that meet the straights, then round — does NOT cross the track */}
+			<mesh position={[ix, 0.55, cz + leg / 2 - 0.25]} castShadow>
+				<boxGeometry args={[0.38, 1.1, leg]} />
+				<meshStandardMaterial color='#1d4ed8' />
+			</mesh>
+			<mesh position={[cx + leg / 2 - 0.25, 0.55, iz]} castShadow>
+				<boxGeometry args={[leg, 1.1, 0.38]} />
+				<meshStandardMaterial color='#1d4ed8' />
+			</mesh>
+			<mesh position={[filX, 0.55, filZ]} rotation={[Math.PI / 2, 0, Math.PI]} castShadow>
+				<torusGeometry args={[R, 0.2, 10, 18, Math.PI / 2]} />
+				<meshStandardMaterial color='#1d4ed8' />
+			</mesh>
 
-			{/* White pole in the inside corner joint */}
-			<mesh position={[cx + 0.18, 1.1, cz + 0.18]} castShadow>
-				<boxGeometry args={[0.22, 2.2, 0.22]} />
+			{/* White pole at the inside joint */}
+			<mesh position={[ix, 1.1, iz]} castShadow>
+				<boxGeometry args={[0.18, 2.2, 0.18]} />
 				<meshStandardMaterial color='#f3f4f6' />
 			</mesh>
 
 			<RigidBody type='fixed' colliders={false}>
-				<CuboidCollider args={[0.2, 0.55, half]} position={[innerX, 0.55, 0]} />
-				<CuboidCollider args={[half, 0.55, 0.2]} position={[0, 0.55, innerZ]} />
+				<CuboidCollider args={[0.2, 0.55, leg / 2]} position={[ix, 0.55, cz + leg / 2 - 0.25]} />
+				<CuboidCollider args={[leg / 2, 0.55, 0.2]} position={[cx + leg / 2 - 0.25, 0.55, iz]} />
 				{oSegs.map((t, i) => (
 					<CuboidCollider
 						key={i}
@@ -55,7 +64,6 @@ export default function Corner({ position = [0, 0, 0], rotation = 0 }) {
 				))}
 			</RigidBody>
 
-			{/* Outer steel curve */}
 			{oPosts.map((t, i) => (
 				<mesh key={`op-${i}`} position={[cx + OUTER_R * Math.cos(t), LAYER_HEIGHT / 2, cz + OUTER_R * Math.sin(t)]}>
 					<boxGeometry args={[0.14, LAYER_HEIGHT, 0.14]} />
