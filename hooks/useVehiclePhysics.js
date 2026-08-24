@@ -168,24 +168,18 @@ export const useVehiclePhysics = (vehicleRef, wheels) => {
 	const toggleLights = useGameStore((state) => state.toggleLights)
 
 	// Reset vehicle function
-	const resetVehicle = useCallback(() => {
+		const resetVehicle = useCallback(() => {
 		const vehicle = vehicleRef.current
 		if (!vehicle) return
 
-		// Reset position to scene center
-		vehicle.setTranslation(RESET_POSITION, true)
+		const t = vehicle.translation()
+		const r = vehicle.rotation()
+		const yaw = Math.atan2(2 * (r.w * r.y + r.x * r.z), 1 - 2 * (r.y * r.y + r.x * r.x))
 
-		// Reset rotation to upright
-		vehicle.setRotation(RESET_ROTATION, true)
-
-		// Reset velocities
+		vehicle.setTranslation({ x: t.x, y: t.y + 1.2, z: t.z }, true)
+		vehicle.setRotation({ x: 0, y: Math.sin(yaw / 2), z: 0, w: Math.cos(yaw / 2) }, true)
 		vehicle.setLinvel({ x: 0, y: 0, z: 0 }, true)
 		vehicle.setAngvel({ x: 0, y: 0, z: 0 }, true)
-
-		// Reset gear to park
-		vehicleState.gear = 0
-		isInPark.current = true
-		parkEngageTimer.current = 0
 	}, [vehicleRef])
 
 	// Setup vehicle physics
