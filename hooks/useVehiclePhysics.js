@@ -568,6 +568,12 @@ export const useVehiclePhysics = (vehicleRef, wheels) => {
 
 				// Combined force: base * throttle * torque curve * gear advantage
 				engineForce = FORCES.accelerate * throttleInput * torqueMultiplier * gearMultiplier
+						const maxSpeed = 65 / 3.6
+		if (forwardSpeed >= maxSpeed) {
+			engineForce = 0
+		} else if (forwardSpeed > maxSpeed * 0.9) {
+			engineForce *= 1 - (forwardSpeed / maxSpeed - 0.9) / 0.1
+		}
 				brakeForce = 0
 			} else if (forwardSpeed > 1.0) {
 				// Engine braking when coasting forward
