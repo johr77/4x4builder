@@ -91,7 +91,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	})
 
 	// Collider props
-	const colliderArgs = useMemo(() => [0.9, 0.5, wheelbase / 2 + axleHeight], [wheelbase, axleHeight])
+	const colliderArgs = useMemo(() => [0.5, 0.5, wheelbase / 2 + axleHeight], [wheelbase, axleHeight])
 	const colliderPosition = useMemo(() => [0, 0.7, 0], [])
 
 	return (
