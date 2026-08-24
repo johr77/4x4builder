@@ -1,22 +1,20 @@
 import { RigidBody, CuboidCollider } from '@react-three/rapier'
 import { SIZE, OUTER_HEIGHT, WALL, COLORS } from './TrackConstants'
-import DirtSurface from './DirtSurface'
+import MudRoad from './MudRoad'
 
 export default function Straight({ position = [0, 0, 0], rotation = 0 }) {
 	const half = SIZE / 2
 	const inner = SIZE - WALL * 2
-	const seed = (position[0] || 1) * 3.7 + (position[2] || 1) * 11.3
 
 	return (
 		<group position={position} rotation={[0, rotation, 0]}>
+			<MudRoad width={inner} length={SIZE} />
+
 			<RigidBody type='fixed' colliders={false}>
-				<CuboidCollider args={[inner / 2, 0.2, half]} position={[0, 0.2, 0]} />
 				<CuboidCollider args={[WALL / 2, OUTER_HEIGHT / 2, half]} position={[-(half - WALL / 2), OUTER_HEIGHT / 2, 0]} />
 				<CuboidCollider args={[WALL / 2, OUTER_HEIGHT / 2, half]} position={[half - WALL / 2, OUTER_HEIGHT / 2, 0]} />
 				<CuboidCollider args={[half, 0.2, half]} position={[0, OUTER_HEIGHT, 0]} />
 			</RigidBody>
-
-			<DirtSurface width={inner} length={SIZE} seed={seed} />
 
 			<mesh position={[-(half - WALL / 2), OUTER_HEIGHT / 2, 0]} castShadow receiveShadow>
 				<boxGeometry args={[WALL, OUTER_HEIGHT, SIZE]} />
