@@ -98,7 +98,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// Bigger = more top-heavy, scrapes ground. Smaller = less scrape, less wall contact
 	// 3rd (wheelbase / 2 + axleHeight),half length,Front–back,
 	// Bigger = nose/tail hit jumps and ramps sooner
-	const colliderArgs = useMemo(() => [0.9, 0.1, wheelbase / 2 + axleHeight], [wheelbase, axleHeight])
+	const colliderArgs = useMemo(() => [0.9, 0.9, wheelbase / 2 + axleHeight], [wheelbase, axleHeight])
 	// colliderPosition
 	// 1st (0),left / right,Keep 0,—
 	// 2nd (1),up / down,Center of the box. 
