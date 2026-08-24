@@ -8,7 +8,10 @@ export const WALL = 0.5
 
 export const COLORS = {
 	outer: '#4a3728',
-	inner: '#6b4f3a',
-	road: '#9a7040',
-	roadDark: '#7a5830',
+	inner: '#5a4330',
+	road: '#5c4324',
+	roadDark: '#3d2c18',
+	rut: '#2a1c10',
+	puddle: '#1c2a24',
+	puddleRim: '#3a3420',
 }
