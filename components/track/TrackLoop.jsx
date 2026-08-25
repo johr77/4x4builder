@@ -31,17 +31,15 @@ export default function TrackLoop() {
 	)
 
 		for (let j = S + 1; j < N; j++) {
-		if (j === 3) {
-			tiles.push(<Hill key='hill-up' position={[pos(W), 0, pos(j)]} innerSign={1} />)
+				if (j === 3) {
+			tiles.push(<Hill key='hill-up' position={[pos(W), 0, pos(j)]} innerSign={1} from={0} to={START_PEAK} />)
 		} else if (j === 4) {
 			tiles.push(<Start key='start' position={[pos(W), 0, pos(j)]} innerSign={1} />)
-				} else if (j === 5) {
-			tiles.push(<Hill key='hill-down' position={[pos(W), 0, pos(j)]} innerSign={1} down />)
+		} else if (j === 5) {
+			tiles.push(<Hill key='hill-down' position={[pos(W), 0, pos(j)]} innerSign={1} from={START_PEAK} to={0} />)
 		} else {
 			tiles.push(<Straight key={`w-${j}`} position={[pos(W), 0, pos(j)]} innerSign={1} />)
 		}
-		tiles.push(<Straight key={`e-${j}`} position={[pos(E), 0, pos(j)]}  />)
-	}
 
 	return <>{tiles}</>
 }
