@@ -568,7 +568,7 @@ export const useVehiclePhysics = (vehicleRef, wheels) => {
 
 				// Combined force: base * throttle * torque curve * gear advantage
 				engineForce = FORCES.accelerate * throttleInput * torqueMultiplier * gearMultiplier
-						const maxSpeed = 65 / 3.6
+						const maxSpeed = 75 / 3.6
 		if (forwardSpeed >= maxSpeed) {
 			engineForce = 0
 		} else if (forwardSpeed > maxSpeed * 0.9) {
