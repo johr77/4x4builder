@@ -1,4 +1,4 @@
-import { getBindings } from '../../../store/controlBindings'
+import { getBindings, getStickSensitivity } from '../../../store/controlBindings'
 import { useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import useInputStore from '../../../store/inputStore'
@@ -99,8 +99,13 @@ const InputManager = () => {
 			input.rightBumper = gamepad.buttons[GAMEPAD.BUTTON_RB]?.pressed ?? false
 		}
 
-		const bindings = getBindings()
-				const read = (binding) => {
+				const bindings = getBindings()
+		const { left: leftSens, right: rightSens } = getStickSensitivity()
+		const ls = leftSens / 100
+		const rs = rightSens / 100
+		const stickScale = (axisIndex) => (axisIndex === 2 || axisIndex === 3 ? rs : ls)
+
+		const read = (binding) => {
 			if (!binding) return 0
 			let v = 0
 			if (binding.key && keys?.has?.(binding.key)) v = 1
@@ -113,10 +118,18 @@ const InputManager = () => {
 
 		input.rightTrigger = Math.max(0, read(bindings.throttle))
 		input.leftTrigger = Math.max(0, read(bindings.brake))
-		input.leftStickX = read(bindings.steer)
+
+		input.leftStickY *= ls
+		input.rightStickX *= rs
+		input.rightStickY *= rs
+
+		const steerAxis = bindings.steer?.kind === 'axis' ? bindings.steer.index : 0
+		input.leftStickX = read(bindings.steer) * stickScale(steerAxis)
+
 		if (bindings.camera?.kind === 'stick' && gamepad) {
-			input.lookX = gamepad.axes[bindings.camera.xAxis] ?? 0
-			input.lookY = (gamepad.axes[bindings.camera.yAxis] ?? 0) * (bindings.camera.invertY ?? 1)
+			const camScale = stickScale(bindings.camera.xAxis)
+			input.lookX = (gamepad.axes[bindings.camera.xAxis] ?? 0) * camScale
+			input.lookY = (gamepad.axes[bindings.camera.yAxis] ?? 0) * (bindings.camera.invertY ?? 1) * camScale
 		} else {
 			input.lookX = input.rightStickX || 0
 			input.lookY = input.rightStickY || 0

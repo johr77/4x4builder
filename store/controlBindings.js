@@ -41,3 +41,35 @@ export function resetBindings() {
 	localStorage.removeItem(KEY)
 	return { ...DEFAULT_BINDINGS }
 }
+const SENS_KEY = 'taters-stick-sensitivity'
+export const DEFAULT_STICK_SENSITIVITY = { left: 100, right: 100 }
+
+function clampSens(v) {
+	const n = Number(v)
+	if (!Number.isFinite(n)) return 100
+	return Math.min(100, Math.max(0, Math.round(n)))
+}
+
+let cachedSens = null
+
+export function getStickSensitivity() {
+	if (cachedSens) return cachedSens
+	try {
+		const saved = JSON.parse(localStorage.getItem(SENS_KEY) || '{}')
+		cachedSens = { left: clampSens(saved.left ?? 100), right: clampSens(saved.right ?? 100) }
+	} catch {
+		cachedSens = { ...DEFAULT_STICK_SENSITIVITY }
+	}
+	return cachedSens
+}
+
+export function saveStickSensitivity(next) {
+	cachedSens = { left: clampSens(next.left), right: clampSens(next.right) }
+	localStorage.setItem(SENS_KEY, JSON.stringify(cachedSens))
+}
+
+export function resetStickSensitivity() {
+	localStorage.removeItem(SENS_KEY)
+	cachedSens = { ...DEFAULT_STICK_SENSITIVITY }
+	return cachedSens
+}

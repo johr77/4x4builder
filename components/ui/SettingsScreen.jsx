@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CONTROL_ACTIONS, getBindings, saveBindings, resetBindings } from '../../store/controlBindings'
+import {
+	CONTROL_ACTIONS,
+	getBindings,
+	saveBindings,
+	resetBindings,
+	getStickSensitivity,
+	saveStickSensitivity,
+	resetStickSensitivity,
+} from '../../store/controlBindings'
 
 const BUTTON_NAMES = ['A', 'B', 'X', 'Y', 'LB', 'RB', 'LT', 'RT', 'Back', 'Start', 'L3', 'R3', 'D-Up', 'D-Down', 'D-Left', 'D-Right']
 const AXIS_NAMES = ['Left Stick X', 'Left Stick Y', 'Right Stick X', 'Right Stick Y']
@@ -15,9 +23,38 @@ function labelFor(binding) {
 	return 'Not set'
 }
 
+function SensSlider({ label, value, onChange }) {
+	return (
+		<div
+			style={{
+				width: 'min(420px, 100%)',
+				background: '#00000044',
+				border: '1px solid #f4e6c822',
+				borderRadius: 8,
+				padding: '12px 16px',
+				marginBottom: 12,
+			}}
+		>
+			<div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+				<strong>{label}</strong>
+				<span>{value}</span>
+			</div>
+			<input
+				type='range'
+				min={0}
+				max={100}
+				value={value}
+				onChange={(e) => onChange(Number(e.target.value))}
+				style={{ width: '100%', accentColor: '#c2410c', cursor: 'pointer' }}
+			/>
+		</div>
+	)
+}
+
 export default function SettingsScreen() {
 	const navigate = useNavigate()
 	const [bindings, setBindings] = useState(getBindings)
+	const [sens, setSens] = useState(getStickSensitivity)
 	const [listening, setListening] = useState(null)
 	const [pending, setPending] = useState(null)
 
@@ -110,9 +147,16 @@ export default function SettingsScreen() {
 		setPending(null)
 	}
 
+	const setSensSide = (side, value) => {
+		const next = { ...sens, [side]: value }
+		setSens(next)
+		saveStickSensitivity(next)
+	}
+
 	const doReset = () => {
 		const next = resetBindings()
 		setBindings(next)
+		setSens(resetStickSensitivity())
 		setListening(null)
 		setPending(null)
 	}
@@ -157,6 +201,10 @@ export default function SettingsScreen() {
 					<span style={{ opacity: 0.85 }}>{labelFor(bindings[action.id])}</span>
 				</div>
 			))}
+
+			<p style={{ letterSpacing: '0.2em', fontSize: 12, opacity: 0.7, margin: '16px 0 12px' }}>STICK SENSITIVITY</p>
+			<SensSlider label='Left Stick' value={sens.left} onChange={(v) => setSensSide('left', v)} />
+			<SensSlider label='Right Stick' value={sens.right} onChange={(v) => setSensSide('right', v)} />
 
 			<button
 				onClick={doReset}
