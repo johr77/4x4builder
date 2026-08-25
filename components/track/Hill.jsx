@@ -20,7 +20,7 @@ export default function Hill({ position = [0, 0, 0], rotation = 0, innerSign = 1
 	const wallAngle = Math.atan2(rise, SIZE)
 	const wallLen = Math.hypot(SIZE, rise)
 	const wallY = (from + to) / 2 + 0.55
-	const meshLen = SIZE + 0.5
+	const meshLen = SIZE + 0.35
 
 	const [sand, sandNormal] = useLoader(TextureLoader, [
 		'/assets/images/ground/sand.jpg',
@@ -43,17 +43,26 @@ export default function Hill({ position = [0, 0, 0], rotation = 0, innerSign = 1
 		const colors = []
 		const cos = Math.cos(rotation)
 		const sin = Math.sin(rotation)
-		for (let i = 0; i < pos.count; i++) {
+				for (let i = 0; i < pos.count; i++) {
 			const x = pos.getX(i)
 			const z = pos.getZ(i)
 			const wx = position[0] + x * cos + z * sin
 			const wz = position[2] - x * sin + z * cos
-						const rut =
-				Math.exp(-Math.pow((wz % 3) - 1.1, 2) / 0.3) * 0.5 +
-				Math.exp(-Math.pow((wz % 3) + 1.1, 2) / 0.3) * 0.5
-			pos.setY(i, hillHeight(z, from, to) + Math.max(0.04 * Math.sin(wx * 2 + wz) - 0.08 * rut, -0.08))
+
+			const rutZ =
+				Math.exp(-Math.pow(x + 1.15, 2) / (2 * 0.38 * 0.38)) +
+				Math.exp(-Math.pow(x - 1.15, 2) / (2 * 0.38 * 0.38))
+			const wave = 0.82 + 0.18 * Math.sin(wx * 1.7 + wz * 0.4)
+			const depth = 0.22 * rutZ * wave
+			const lumps =
+				Math.sin(wx * 1.4 + wz * 0.55) * 0.045 +
+				Math.sin(wz * 2.1 + wx * 0.8) * 0.03 +
+				Math.sin((wx + wz) * 3.3) * 0.015
+
+			pos.setY(i, hillHeight(z, from, to) + Math.max(lumps - depth, -0.12))
 			uv.setXY(i, wx / 6, wz / 6)
-			const wet = Math.min(1, rut)
+
+			const wet = Math.min(1, depth * 4)
 			colors.push(0.55 + (1 - wet) * 0.45, 0.42 + (1 - wet) * 0.35, 0.28 + (1 - wet) * 0.2)
 		}
 		geo.setAttribute('color', new Float32BufferAttribute(colors, 3))

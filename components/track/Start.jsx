@@ -15,10 +15,7 @@ export default function Start({ position = [0, 0, 0], rotation = 0, innerSign = 
 	return (
 		<group position={position} rotation={[0, rotation, 0]}>
 			{/* fill only — shorter so it doesn’t make a cliff into the hill */}
-			<mesh position={[0, START_PEAK / 2, 0]} receiveShadow>
-				<boxGeometry args={[inner - 0.2, START_PEAK, SIZE - 0.4]} />
-				<meshStandardMaterial color='#5a3d22' roughness={0.95} />
-			</mesh>
+
 
 			<group position={[0, START_PEAK, 0]}>
 				<MudRoad width={inner} length={SIZE} origin={position} yaw={rotation} />
