@@ -107,7 +107,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// 8/24/26 - .65 seems right (.7 still spins(rarly), .6 hits spots in ground.)
 	// Lower = more stable, more ground scrape. Higher = less scrape, more tippy
 	// 3rd (0),forward / back,Keep 0,—
-	const colliderPosition = useMemo(() => [0, .65, 0], [])
+	const colliderPosition = useMemo(() => [0, .65, 2], [])
 
 	return (
 		<>
