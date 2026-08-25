@@ -15,7 +15,7 @@ export default function TrackLoop() {
 	const tiles = []
 
 	// Two corners side by side — south hairpin
-	tiles.push(<Corner key='s-w' position={[pos(W), 0, pos(S)]} rotation={Math.PI} />)
+	tiles.push(<Corner key='s-w' position={[pos(W), 0, pos(S)]}  />)
 	tiles.push(<Corner key='s-e' position={[pos(E), 0, pos(S)]} rotation={Math.PI / 2} />)
 
 	// Two corners side by side — north hairpin
@@ -35,12 +35,12 @@ export default function TrackLoop() {
 			tiles.push(<Hill key='hill-up' position={[pos(W), 0, pos(j)]} innerSign={1} />)
 		} else if (j === 4) {
 			tiles.push(<Start key='start' position={[pos(W), 0, pos(j)]} innerSign={1} />)
-		} else if (j === 5) {
-			tiles.push(<Hill key='hill-down' position={[pos(W), 0, pos(j)]} rotation={Math.PI} innerSign={-1} />)
+				} else if (j === 5) {
+			tiles.push(<Hill key='hill-down' position={[pos(W), 0, pos(j)]} innerSign={1} down />)
 		} else {
 			tiles.push(<Straight key={`w-${j}`} position={[pos(W), 0, pos(j)]} innerSign={1} />)
 		}
-		tiles.push(<Straight key={`e-${j}`} position={[pos(E), 0, pos(j)]} innerSign={-1} />)
+		tiles.push(<Straight key={`e-${j}`} position={[pos(E), 0, pos(j)]}  />)
 	}
 
 	return <>{tiles}</>

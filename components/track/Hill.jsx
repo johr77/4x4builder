@@ -3,17 +3,18 @@ import { useLoader } from '@react-three/fiber'
 import { RigidBody, CuboidCollider } from '@react-three/rapier'
 import { PlaneGeometry, TextureLoader, RepeatWrapping, SRGBColorSpace, Float32BufferAttribute } from 'three'
 import { SIZE, LAYER_HEIGHT, WALL, START_PEAK } from './TrackConstants'
+import OuterWall from './OuterWall'
 
 const SEGS_Z = 28
 const WSEGS = 8
 
-function hillHeight(z) {
+function hillHeight(z, down) {
 	const t = (z + SIZE / 2) / SIZE
 	const s = t * t * (3 - 2 * t)
-	return START_PEAK * s
+	return START_PEAK * (down ? 1 - s : s)
 }
 
-export default function Hill({ position = [0, 0, 0], rotation = 0, innerSign = 1 }) {
+export default function Hill({ position = [0, 0, 0], rotation = 0, innerSign = 1, down = false }) {
 	const half = SIZE / 2
 	const inner = SIZE - WALL * 2
 	const innerX = innerSign * (half - 0.28)
@@ -41,19 +42,19 @@ export default function Hill({ position = [0, 0, 0], rotation = 0, innerSign = 1
 		for (let i = 0; i < pos.count; i++) {
 			const x = pos.getX(i)
 			const z = pos.getZ(i)
-			pos.setY(i, hillHeight(z))
+			pos.setY(i, hillHeight(z, down))
 			uv.setXY(i, (position[0] + x * cos + z * sin) / 6, (position[2] - x * sin + z * cos) / 6)
 			colors.push(0.62, 0.46, 0.28)
 		}
 		geo.setAttribute('color', new Float32BufferAttribute(colors, 3))
 		geo.computeVertexNormals()
 		return geo
-	}, [inner, position, rotation])
+	}, [inner, position, rotation, down])
 
 	const wallSegs = []
 	for (let i = 0; i < WSEGS; i++) {
 		const z = -half + ((i + 0.5) * SIZE) / WSEGS
-		wallSegs.push({ z, len: SIZE / WSEGS + 0.05, h: hillHeight(z) })
+		wallSegs.push({ z, len: SIZE / WSEGS + 0.05, h: hillHeight(z, down) })
 	}
 
 	return (
@@ -72,15 +73,13 @@ export default function Hill({ position = [0, 0, 0], rotation = 0, innerSign = 1
 
 			<RigidBody type='fixed' colliders={false}>
 				{wallSegs.map((s, i) => (
-					<group key={i}>
-						<CuboidCollider args={[0.2, 0.55, s.len / 2]} position={[innerX, s.h + 0.55, s.z]} />
-						<CuboidCollider args={[0.2, LAYER_HEIGHT / 2, s.len / 2]} position={[outerX, s.h + LAYER_HEIGHT / 2, s.z]} />
-					</group>
+					<CuboidCollider key={i} args={[0.2, 0.55, s.len / 2]} position={[innerX, s.h + 0.55, s.z]} />
 				))}
+				<CuboidCollider args={[0.2, LAYER_HEIGHT / 2, half]} position={[outerX, LAYER_HEIGHT / 2, 0]} />
 			</RigidBody>
 
 			{wallSegs.map((s, i) => (
-				<group key={`w-${i}`}>
+				<group key={`iw-${i}`}>
 					<mesh position={[innerX, s.h + 0.55, s.z]} castShadow>
 						<boxGeometry args={[0.38, 1.1, s.len]} />
 						<meshStandardMaterial color='#1d4ed8' />
@@ -89,18 +88,12 @@ export default function Hill({ position = [0, 0, 0], rotation = 0, innerSign = 1
 						<boxGeometry args={[0.1, 2.1, 0.1]} />
 						<meshStandardMaterial color='#f3f4f6' />
 					</mesh>
-					<mesh position={[outerX, s.h + LAYER_HEIGHT / 2, s.z]}>
-						<boxGeometry args={[0.14, LAYER_HEIGHT, 0.14]} />
-						<meshStandardMaterial color='#3f3f46' />
-					</mesh>
-					{[0.32, 0.62, 0.92, 1.22, 1.52].map((y) => (
-						<mesh key={y} position={[outerX, s.h + y, s.z]}>
-							<boxGeometry args={[0.12, 0.22, s.len]} />
-							<meshStandardMaterial color='#d4d4d8' metalness={0.8} roughness={0.3} />
-						</mesh>
-					))}
 				</group>
 			))}
+
+			<group position={[outerX, 0, 0]} rotation={[0, outerX > 0 ? 0 : Math.PI, 0]}>
+				<OuterWall />
+			</group>
 		</group>
 	)
 }
