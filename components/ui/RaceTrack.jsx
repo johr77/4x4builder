@@ -95,7 +95,7 @@ export default function RaceTrack() {
 					<Physics>
 					<Vehicle 
 					spawnPosition={[
-						-((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + 4 * SIZE,
+						-((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + 1 * SIZE,
 						2.8,
 						-((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + 4 * SIZE,
 					]}
