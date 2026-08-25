@@ -3,7 +3,7 @@ import { useLoader } from '@react-three/fiber'
 import { RigidBody } from '@react-three/rapier'
 import { PlaneGeometry, TextureLoader, RepeatWrapping, SRGBColorSpace, Float32BufferAttribute } from 'three'
 
-export default function MudRoad({ width, length, origin = [0, 0, 0], yaw = 0, corner = false }) {
+export default function MudRoad({ width, length, origin = [0, 0, 0], yaw = 0, corner = false, slopeFrom = 0, slopeTo = 0 }) {
 	const [sand, sandNormal] = useLoader(TextureLoader, [
 		'/assets/images/ground/sand.jpg',
 		'/assets/images/ground/sand_normal.jpg',
@@ -45,7 +45,10 @@ export default function MudRoad({ width, length, origin = [0, 0, 0], yaw = 0, co
 				Math.sin(wz * 2.1 + wx * 0.8) * 0.03 +
 				Math.sin((wx + wz) * 3.3) * 0.015
 
-			pos.setY(i, Math.max(lumps - depth, -0.12))
+			const t = Math.min(1, Math.max(0, (z + length / 2) / length))
+			const s = t * t * (3 - 2 * t)
+			const slope = slopeFrom + (slopeTo - slopeFrom) * s
+			pos.setY(i, slope + Math.max(lumps - depth, -0.12))
 			uv.setXY(i, wx / 6, wz / 6)
 
 			const wet = Math.min(1, depth * 4)
@@ -55,7 +58,7 @@ export default function MudRoad({ width, length, origin = [0, 0, 0], yaw = 0, co
 		geo.setAttribute('color', new Float32BufferAttribute(colors, 3))
 		geo.computeVertexNormals()
 		return geo
-	}, [width, length, origin, yaw, corner])
+		}, [width, length, origin, yaw, corner, slopeFrom, slopeTo])
 
 	return (
 		<RigidBody type='fixed' colliders='trimesh'>
