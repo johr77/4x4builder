@@ -7,6 +7,7 @@ import useGameStore, { vehicleState } from '../store/gameStore'
 import useVehicleInput from './useVehicleInput'
 import useBuoyancy from './useBuoyancy'
 
+const SCALE = 0.40 // must match Vehicle.jsx
 // Reset position (scene center, slightly above ground)
 const RESET_POSITION = { x: 0, y: 1, z: 0 }
 // Upright rotation (identity quaternion)
@@ -253,7 +254,7 @@ export const useVehiclePhysics = (vehicleRef, wheels) => {
 			}
 
 			// Update position
-			wheelRef.position.y = connection?.y - suspension
+			wheelRef.position.y = (connection?.y - suspension) / SCALE
 
 			// Apply steering and rotation using reusable quaternions
 			wheelQuat1.setFromAxisAngle(VECTORS.UP, steering)
