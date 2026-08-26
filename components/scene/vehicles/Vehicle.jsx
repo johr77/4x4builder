@@ -79,7 +79,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 
 	// Box SIZE is scaled. Position is NOT — it stays the center.
 	const colliderArgs = useMemo(
-		() => [0.8 , 0.4 , (wheelbase / 2 + axleHeight)],
+		() => [0.8 , 0.4 , (wheelbase / 1 + axleHeight)],
 		[wheelbase, axleHeight]
 	)
 	const colliderPosition = useMemo(() => [0, 1, 0], [])
