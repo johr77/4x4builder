@@ -44,16 +44,16 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 
 	const wheelWidth = (config.rim_width * 2.54) / 100
 
-	const physicsWheels = useMemo(() => {
+		const physicsWheels = useMemo(() => {
 		return wheelPositions.map((wheel, i) => ({
 			ref: wheelRefs[i],
 			axleCs: new Vector3(1, 0, 0),
-			position: new Vector3(...wheel.position).multiplyScalar(SCALE),
+			position: new Vector3(...wheel.position),
 			suspensionDirection: new Vector3(0, -1, 0),
-			maxSuspensionTravel: 0.3 * SCALE,
-			suspensionRestLength: 0.1 * SCALE,
+			maxSuspensionTravel: 0.3,
+			suspensionRestLength: 0.1,
 			suspensionStiffness: 28,
-			radius: ((config.tire_diameter * 2.54) / 100 / 2) * SCALE,
+			radius: (config.tire_diameter * 2.54) / 100 / 2,
 		}))
 	}, [wheelPositions, config.tire_diameter])
 
