@@ -191,7 +191,7 @@ export const useVehiclePhysics = (vehicleRef, wheels) => {
 				wheelsInContact++
 			}
 
-			wheelRef.position.y = (connection?.y - suspension) / SCALE
+				wheelRef.position.y = connection?.y - suspension
 
 			wheelQuat1.setFromAxisAngle(VECTORS.UP, steering)
 			wheelQuat2.setFromAxisAngle(wheelAxleCs, rotation)
