@@ -107,17 +107,13 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// 8/24/26 - .65 seems right (.7 still spins(rarly), .6 hits spots in ground.)
 	// Lower = more stable, more ground scrape. Higher = less scrape, more tippy
 	// 3rd (0),forward / back,Keep 0,—
-	const colliderPosition = useMemo(() => [0, 0.65 * SCALE, 0], [])
-	const colliderMass = useMemo(
-		() => 8 * 0.8 * 0.4 * (wheelbase / 2 + axleHeight),
-		[wheelbase, axleHeight]
-	)
+	const colliderPosition = useMemo(() => [0,1, 0], [])
 
 	return (
 		<>
 			<RigidBody ref={chassisRef} type='dynamic' position={spawnPosition}
 							rotation={spawnRotation} colliders={false} canSleep={false} linearDamping={0.05} angularDamping={1}>
-								<CuboidCollider args={colliderArgs} position={colliderPosition} mass={colliderMass} />
+				<CuboidCollider args={colliderArgs} position={colliderPosition} />
 				<group ref={chassisGroupRef} name='Vehicle' scale={[SCALE, SCALE, SCALE]}>
 					<VehicleAudio />
 					<Suspense fallback={null}>
