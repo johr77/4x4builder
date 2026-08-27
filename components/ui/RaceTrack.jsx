@@ -92,7 +92,7 @@ export default function RaceTrack() {
 				<Suspense fallback={<Loader />}>
 				<CameraManager forceMode='chase' chaseOffset={[0, 1.6, -5]} chaseLookAt={[0, 0.7, 4]} />
 					<InputManager />
-					<Physics>
+					<Physics debug>
 					<Vehicle 
 					spawnPosition={[
 						-((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + 1 * SIZE,
