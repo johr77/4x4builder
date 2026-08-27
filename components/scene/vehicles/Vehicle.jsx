@@ -16,12 +16,13 @@ import WheelParticles from './WheelParticles'
 import TireTracks from './TireTracks'
 import Wheels from './Wheels'
 import VehicleBody from './VehicleBody'
-
-const SCALE = 0.40 // must match hooks/useVehiclePhysics.js
-
+const SCALE = 0.40
+// Vehicle component with physics
 const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
+	// Sync vehicle config changes to multiplayer server
 	useVehicleSync()
 
+	// Get current vehicle config from store and merge with defaults
 	const currentVehicle = useGameStore((state) => state.currentVehicle, shallow)
 	const config = useMemo(
 		() => ({
@@ -31,76 +32,88 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 		[currentVehicle]
 	)
 
+	// Get vehicle store
 	const performanceDegraded = useGameStore((state) => state.performanceDegraded)
 	const isMobile = useGameStore((state) => state.isMobile)
 
 	const chassisRef = useRef(null)
-	const chassisGroupRef = useRef(null)
-	const bodyRef = useRef(null)
+	const chassisGroupRef = useRef(null) // Reference to the visual group that follows interpolated physics
+	const bodyRef = useRef(null) // Reference to body group for spare wheel to follow
 	const wheelRefsArray = useRef([{ current: null }, { current: null }, { current: null }, { current: null }])
 	const wheelRefs = wheelRefsArray.current
 
+	// Get vehicle dimensions and wheel positions from shared hook
 	const { axleHeight, vehicleHeight, wheelbase, wheelPositions } = useVehicleDimensions(config)
 
+	// Convert wheel width from inches to meters
 	const wheelWidth = (config.rim_width * 2.54) / 100
 
-		const physicsWheels = useMemo(() => {
-		return wheelPositions.map((wheel, i) => ({
-			ref: wheelRefs[i],
-			axleCs: new Vector3(1, 0, 0),
-			position: new Vector3(...wheel.position),
-			suspensionDirection: new Vector3(0, -1, 0),
-			maxSuspensionTravel: 0.3,
-			suspensionRestLength: 0.1,
-			suspensionStiffness: 28,
-			radius: (config.tire_diameter * 2.54) / 100 / 2,
-		}))
-	}, [wheelPositions, config.tire_diameter])
+	// Create wheel configurations
+	const physicsWheels = useMemo(() => {
+	return wheelPositions.map((wheel, i) => ({
+		ref: wheelRefs[i],
+		axleCs: new Vector3(1, 0, 0),
+		position: new Vector3(...wheel.position),
+		suspensionDirection: new Vector3(0, -1, 0),
+		maxSuspensionTravel: 0.3,
+		suspensionRestLength: 0.1,
+		suspensionStiffness: 28,
+		radius: (config.tire_diameter * 2.54) / 100 / 2,
+	}))
+}, [wheelPositions, config.tire_diameter])
 
+	// Use vehicle physics
 	const { vehicleController } = useVehiclePhysics(chassisRef, physicsWheels)
 
+	// Broadcast transform to multiplayer server
 	useVehicleBroadcast(chassisRef, vehicleController)
 
+	// Reusable vectors/quaternions to avoid GC pressure
 	const tempWorldPos = useMemo(() => new Vector3(), [])
 	const tempQuat = useMemo(() => new Quaternion(), [])
 
+	// Update vehicle position for camera and other systems each frame
+	// Use the visual group's world position which is interpolated by Rapier
 	useFrame(() => {
 		if (!chassisGroupRef.current) return
 
+		// Get interpolated world position and quaternion from the visual group
 		chassisGroupRef.current.getWorldPosition(tempWorldPos)
 		chassisGroupRef.current.getWorldQuaternion(tempQuat)
 
+		// Update vehicle position for camera and other systems
 		vehicleState.position.copy(tempWorldPos)
 
+		// Calculate heading (yaw) from quaternion for minimap
 		const sinYaw = 2 * (tempQuat.w * tempQuat.y + tempQuat.x * tempQuat.z)
 		const cosYaw = 1 - 2 * (tempQuat.y * tempQuat.y + tempQuat.x * tempQuat.x)
 		vehicleState.heading = Math.atan2(sinYaw, cosYaw)
 	})
 
-	// Box SIZE is scaled. Position is NOT — it stays the center.
-	const colliderArgs = useMemo(
-		() => [0.8 , 0.4 , (wheelbase / 1 + axleHeight)],
-		[wheelbase, axleHeight]
-	)
-	const colliderPosition = useMemo(() => [0, 1, 0], [])
-	const colliderMass = useMemo(
-		() => 8 * 0.8 * 0.4 * (wheelbase / 2 + axleHeight),
-		[wheelbase, axleHeight]
-	)
+	// Collider props
+	// colliderArgs
+	// 1st (0.9),half width,Left–right. Full width = 1.8,
+	// Bigger = hits walls sooner. Smaller = can clip through walls
+	// 8/24/26 - .7 starts climbing walls, .76 starts to climb (rarely), .8 for now
+	// 2nd (0.5),half height,Up–down. Full height = 1.0,
+	// Bigger = more top-heavy, scrapes ground. Smaller = less scrape, less wall contact
+	// 8/24/26 lifts car on acceleration(less), lifts car on braking, .4 seem right (higher slower)
+	// 3rd (wheelbase / 2 + axleHeight),half length,Front–back,
+	// Bigger = nose/tail hit jumps and ramps sooner
+	const colliderArgs = useMemo(() => [.8, 0.4, wheelbase / 1.7 + axleHeight], [wheelbase, axleHeight])
+	// colliderPosition
+	// 1st (0),left / right,Keep 0,—
+	// 2nd (1),up / down,Center of the box. 
+	// 8/24/26 - .65 seems right (.7 still spins(rarly), .6 hits spots in ground.)
+	// Lower = more stable, more ground scrape. Higher = less scrape, more tippy
+	// 3rd (0),forward / back,Keep 0,—
+	const colliderPosition = useMemo(() => [0,.1, 0], [])
 
 	return (
 		<>
-			<RigidBody
-				ref={chassisRef}
-				type='dynamic'
-				position={spawnPosition}
-				rotation={spawnRotation}
-				colliders={false}
-				canSleep={false}
-				linearDamping={0.05}
-				angularDamping={1}
-			>
-				<CuboidCollider args={colliderArgs} position={colliderPosition} mass={colliderMass} />
+			<RigidBody ref={chassisRef} type='dynamic' position={spawnPosition}
+							rotation={spawnRotation} colliders={false} canSleep={false} linearDamping={0.05} angularDamping={1}>
+				<CuboidCollider args={colliderArgs} position={colliderPosition} />
 				<group ref={chassisGroupRef} name='Vehicle' scale={[SCALE, SCALE, SCALE]}>
 					<VehicleAudio />
 					<Suspense fallback={null}>
@@ -113,6 +126,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 							roughness={config.roughness}
 							addons={config.addons}
 							lighting={config.lighting}
+							
 						/>
 					</Suspense>
 					<Wheels
