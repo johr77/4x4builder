@@ -100,7 +100,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// 8/24/26 lifts car on acceleration(less), lifts car on braking, .4 seem right (higher slower)
 	// 3rd (wheelbase / 2 + axleHeight),half length,Front–back,
 	// Bigger = nose/tail hit jumps and ramps sooner
-	const colliderArgs = useMemo(() => [.4, 0.3, (wheelbase / 2 + axleHeight) * 0.5], [wheelbase, axleHeight])
+	const colliderArgs = useMemo(() => [.4, 0.3, (wheelbase / 2 + axleHeight) * 0.1], [wheelbase, axleHeight])
 	// colliderPosition
 	// 1st (0),left / right,Keep 0,—
 	// 2nd (1),up / down,Center of the box. 
