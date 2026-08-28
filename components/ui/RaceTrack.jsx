@@ -90,7 +90,7 @@ export default function RaceTrack() {
 				<Sky />
 				<EnvMap />
 				<Suspense fallback={<Loader />}>
-				<CameraManager forceMode='chase' chaseOffset={[0, 1.6, -5]} chaseLookAt={[0, 0.7, 4]} />
+				<CameraManager />
 					<InputManager />
 					<Physics debug>
 					<Vehicle 
