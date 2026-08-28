@@ -16,7 +16,7 @@ import WheelParticles from './WheelParticles'
 import TireTracks from './TireTracks'
 import Wheels from './Wheels'
 import VehicleBody from './VehicleBody'
-const SCALE = 0.40
+const SCALE = 0.250
 // Vehicle component with physics
 const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// Sync vehicle config changes to multiplayer server
