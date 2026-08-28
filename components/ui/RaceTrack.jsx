@@ -92,7 +92,7 @@ export default function RaceTrack() {
 				<Suspense fallback={<Loader />}>
 				<CameraManager />
 					<InputManager />
-					<Physics DEBUG>
+					<Physics debug>
 					<Vehicle 
 					spawnPosition={[
 						-((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + 1 * SIZE,
