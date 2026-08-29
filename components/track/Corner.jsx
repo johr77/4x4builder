@@ -8,7 +8,6 @@ import MudRoad from './MudRoad'
 const BERM_W = 3
 const BERM_H = 1.0
 const OUTER_R = SIZE - 0.22
-const INNER_R = 4.2
 const OSEG = 12
 
 function useMudTextures() {
@@ -24,7 +23,7 @@ function useMudTextures() {
 	return [sand, sandNormal]
 }
 
-function CurvedBerm({ origin, yaw, cx, cz, innerR, outerR, highInner }) {
+function CurvedBerm({ origin, yaw, cx, cz, innerR, outerR }) {
 	const [sand, sandNormal] = useMudTextures()
 	const geometry = useMemo(() => {
 		const radialSegs = 8
@@ -50,8 +49,7 @@ function CurvedBerm({ origin, yaw, cx, cz, innerR, outerR, highInner }) {
 				const wz = origin[2] - (cx + x) * sin + (cz + z) * cos
 				const lumps =
 					Math.sin(wx * 1.4 + wz * 0.55) * 0.045 + Math.sin(wz * 2.1 + wx * 0.8) * 0.03
-				const h = (highInner ? 1 - t : t) * BERM_H
-				positions.push(x, h + lumps, z)
+				positions.push(x, t * BERM_H + lumps, z)
 				uvs.push(wx / 6, wz / 6)
 				colors.push(1.0, 0.77, 0.48)
 			}
@@ -72,7 +70,7 @@ function CurvedBerm({ origin, yaw, cx, cz, innerR, outerR, highInner }) {
 		geo.setIndex(indices)
 		geo.computeVertexNormals()
 		return geo
-	}, [origin, yaw, cx, cz, innerR, outerR, highInner])
+	}, [origin, yaw, cx, cz, innerR, outerR])
 
 	return (
 		<RigidBody type='fixed' colliders='trimesh'>
@@ -147,6 +145,8 @@ export default function Corner({ position = [0, 0, 0], rotation = 0 }) {
 	const cx = -half
 	const cz = -half
 	const inner = SIZE - WALL * 2
+	const ix = cx + 0.28
+	const iz = cz + 0.28
 
 	return (
 		<group position={position} rotation={[0, rotation, 0]}>
@@ -155,15 +155,7 @@ export default function Corner({ position = [0, 0, 0], rotation = 0 }) {
 				<MudRoad width={inner} length={SIZE + 0.35} origin={position} yaw={rotation + Math.PI / 2} />
 			</group>
 
-						<CurvedBerm
-				origin={position}
-				yaw={rotation}
-				cx={cx}
-				cz={cz}
-				innerR={INNER_R}
-				outerR={INNER_R + BERM_W}
-				highInner
-			/>
+			{/* outer berm + fence only */}
 			<CurvedBerm
 				origin={position}
 				yaw={rotation}
@@ -171,11 +163,21 @@ export default function Corner({ position = [0, 0, 0], rotation = 0 }) {
 				cz={cz}
 				innerR={SIZE - BERM_W}
 				outerR={SIZE}
-				highInner={false}
 			/>
-
-			<CurvedFence cx={cx} cz={cz} radius={INNER_R} />
 			<CurvedFence cx={cx} cz={cz} radius={OUTER_R} />
+
+			{/* old inner pole — fills the 90° gap, no berm */}
+			<mesh position={[ix, 0.55, iz]} castShadow>
+				<cylinderGeometry args={[0.35, 0.35, 1.1, 16]} />
+				<meshStandardMaterial color='#1d4ed8' />
+			</mesh>
+			<mesh position={[ix, 1.15, iz]} castShadow>
+				<cylinderGeometry args={[0.12, 0.12, 2.3, 8]} />
+				<meshStandardMaterial color='#f3f4f6' />
+			</mesh>
+			<RigidBody type='fixed' colliders={false}>
+				<CuboidCollider args={[0.35, 0.55, 0.35]} position={[ix, 0.55, iz]} />
+			</RigidBody>
 		</group>
 	)
 }
