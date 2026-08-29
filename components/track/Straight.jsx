@@ -70,7 +70,7 @@ function InnerBerm({ origin, yaw }) {
 
 function OuterSteps() {
 	const [sand, sandNormal] = useMudTextures()
-	const half = SIZE / 2
+	const half = SIZE / 1
 	const tread = STEP_W / STEP_N
 	const steps = []
 	for (let i = 0; i < STEP_N; i++) {
