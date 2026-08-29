@@ -7,7 +7,7 @@ import MudRoad from './MudRoad'
 import OuterWall from './OuterWall'
 
 const BERM_W = 2
-const BERM_H = .2
+const BERM_H = .3
 const STEP_N = 3
 const STEP_W = 1
 const STEP_RISE = 2
