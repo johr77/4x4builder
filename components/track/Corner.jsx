@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useLoader } from '@react-three/fiber'
 import { RigidBody, CuboidCollider } from '@react-three/rapier'
-import { RingGeometry, TextureLoader, RepeatWrapping, SRGBColorSpace, Float32BufferAttribute } from 'three'
+import { BufferGeometry, TextureLoader, RepeatWrapping, SRGBColorSpace, Float32BufferAttribute } from 'three'
 import { SIZE, LAYER_HEIGHT, WALL } from './TrackConstants'
 import MudRoad from './MudRoad'
 
@@ -27,31 +27,49 @@ function useMudTextures() {
 function CurvedBerm({ origin, yaw, cx, cz, innerR, outerR, highInner }) {
 	const [sand, sandNormal] = useMudTextures()
 	const geometry = useMemo(() => {
-		const geo = new RingGeometry(innerR, outerR, 32, 8, 0, Math.PI / 2)
-		geo.rotateX(-Math.PI / 2)
-		geo.rotateY(-Math.PI / 2)
-		const pos = geo.attributes.position
-		const uv = geo.attributes.uv
+		const radialSegs = 8
+		const thetaSegs = 24
+		const positions = []
+		const uvs = []
 		const colors = []
+		const indices = []
 		const cos = Math.cos(yaw)
 		const sin = Math.sin(yaw)
 		const span = outerR - innerR
-		for (let i = 0; i < pos.count; i++) {
-			const x = pos.getX(i)
-			const z = pos.getZ(i)
-			const r = Math.hypot(x, z)
-			const t = (r - innerR) / span
-			const wx = origin[0] + (cx + x) * cos + (cz + z) * sin
-			const wz = origin[2] - (cx + x) * sin + (cz + z) * cos
-			const lumps =
-				Math.sin(wx * 1.4 + wz * 0.55) * 0.045 +
-				Math.sin(wz * 2.1 + wx * 0.8) * 0.03
-			const h = (highInner ? 1 - t : t) * BERM_H
-			pos.setY(i, h + lumps)
-			uv.setXY(i, wx / 6, wz / 6)
-			colors.push(1.0, 0.77, 0.48)
+
+		for (let j = 0; j <= thetaSegs; j++) {
+			const theta = (j / thetaSegs) * (Math.PI / 2)
+			const ct = Math.cos(theta)
+			const st = Math.sin(theta)
+			for (let i = 0; i <= radialSegs; i++) {
+				const t = i / radialSegs
+				const r = innerR + t * span
+				const x = r * ct
+				const z = r * st
+				const wx = origin[0] + (cx + x) * cos + (cz + z) * sin
+				const wz = origin[2] - (cx + x) * sin + (cz + z) * cos
+				const lumps =
+					Math.sin(wx * 1.4 + wz * 0.55) * 0.045 + Math.sin(wz * 2.1 + wx * 0.8) * 0.03
+				const h = (highInner ? 1 - t : t) * BERM_H
+				positions.push(x, h + lumps, z)
+				uvs.push(wx / 6, wz / 6)
+				colors.push(1.0, 0.77, 0.48)
+			}
 		}
+
+		for (let j = 0; j < thetaSegs; j++) {
+			for (let i = 0; i < radialSegs; i++) {
+				const a = j * (radialSegs + 1) + i
+				const b = a + radialSegs + 1
+				indices.push(a, b, a + 1, a + 1, b, b + 1)
+			}
+		}
+
+		const geo = new BufferGeometry()
+		geo.setAttribute('position', new Float32BufferAttribute(positions, 3))
+		geo.setAttribute('uv', new Float32BufferAttribute(uvs, 2))
 		geo.setAttribute('color', new Float32BufferAttribute(colors, 3))
+		geo.setIndex(indices)
 		geo.computeVertexNormals()
 		return geo
 	}, [origin, yaw, cx, cz, innerR, outerR, highInner])
@@ -73,7 +91,6 @@ function CurvedBerm({ origin, yaw, cx, cz, innerR, outerR, highInner }) {
 }
 
 function CurvedFence({ cx, cz, radius }) {
-	const half = SIZE / 2
 	const segs = []
 	for (let i = 0; i < OSEG; i++) segs.push(((i + 0.5) / OSEG) * (Math.PI / 2))
 	const posts = []
