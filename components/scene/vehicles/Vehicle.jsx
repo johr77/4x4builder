@@ -60,7 +60,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 		suspensionStiffness: 20,
 		//suspensionStiffness: 28,
 		radius: (config.tire_diameter * 2.65) / 100 / 2,
-		//radius: (config.tire_diameter * 2.54) / 100 / 2, (tires up/down) visual
+		//radius: (config.tire_diameter * 2.54) / 100 / 2,
 	}))
 }, [wheelPositions, config.tire_diameter])
 
