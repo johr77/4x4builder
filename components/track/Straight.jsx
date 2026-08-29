@@ -8,9 +8,9 @@ import OuterWall from './OuterWall'
 
 const BERM_W = 2.3
 const BERM_H = 1.45
-const STEP_N = 4
-const STEP_W = 2.6
-const STEP_RISE = 0.52
+const STEP_N = 2
+const STEP_W = 3.2
+const STEP_RISE = 0.28
 
 function useMudTextures() {
 	const [sand, sandNormal] = useLoader(TextureLoader, [
@@ -105,7 +105,8 @@ export default function Straight({ position = [0, 0, 0], rotation = 0, innerSign
 	const inner = SIZE - WALL * 2
 	const innerX = innerSign * (half - BERM_W / 2)
 	const outerX = -innerSign * (half - STEP_W / 2)
-	const fenceX = -innerSign * (half - 0.06)
+	const innerFenceX = innerSign * (half - 0.06)
+	const outerFenceX = -innerSign * (half - 0.06)
 
 	return (
 		<group position={position} rotation={[0, rotation, 0]}>
@@ -113,17 +114,21 @@ export default function Straight({ position = [0, 0, 0], rotation = 0, innerSign
 
 			<group position={[innerX, 0, 0]} rotation={[0, innerSign === 1 ? 0 : Math.PI, 0]}>
 				<InnerBerm origin={position} yaw={rotation} />
-			</group>
+ mar			</group>
 
 			<group position={[outerX, 0, 0]} rotation={[0, innerSign === -1 ? 0 : Math.PI, 0]}>
 				<OuterSteps />
 			</group>
 
-			{/* fence only — you can drive the steps, not off the map */}
+			{/* catch fences — same style inside and outside */}
 			<RigidBody type='fixed' colliders={false}>
-				<CuboidCollider args={[0.12, 1.6, half]} position={[fenceX, 2.2, 0]} />
+				<CuboidCollider args={[0.12, 1.6, half]} position={[innerFenceX, 2.2, 0]} />
+				<CuboidCollider args={[0.12, 1.6, half]} position={[outerFenceX, 2.2, 0]} />
 			</RigidBody>
-			<group position={[fenceX, 0, 0]} rotation={[0, fenceX > 0 ? 0 : Math.PI, 0]}>
+			<group position={[innerFenceX, 0, 0]} rotation={[0, innerFenceX > 0 ? 0 : Math.PI, 0]}>
+				<OuterWall />
+			</group>
+			<group position={[outerFenceX, 0, 0]} rotation={[0, outerFenceX > 0 ? 0 : Math.PI, 0]}>
 				<OuterWall />
 			</group>
 		</group>
