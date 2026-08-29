@@ -8,7 +8,7 @@ import MudRoad from './MudRoad'
 const BERM_W = 3
 const BERM_H = 1.0
 const OUTER_R = SIZE - 0.22
-const INNER_R = 0.5
+const INNER_R = 4.2
 const OSEG = 12
 
 function useMudTextures() {
@@ -155,13 +155,13 @@ export default function Corner({ position = [0, 0, 0], rotation = 0 }) {
 				<MudRoad width={inner} length={SIZE + 0.35} origin={position} yaw={rotation + Math.PI / 2} />
 			</group>
 
-			<CurvedBerm
+						<CurvedBerm
 				origin={position}
 				yaw={rotation}
 				cx={cx}
 				cz={cz}
-				innerR={0.25}
-				outerR={BERM_W}
+				innerR={INNER_R}
+				outerR={INNER_R + BERM_W}
 				highInner
 			/>
 			<CurvedBerm
