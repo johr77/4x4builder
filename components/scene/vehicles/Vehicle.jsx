@@ -101,13 +101,13 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// 1st (0),left / right,Keep 0,—
 	// 2nd (1),up / down,Center of the box. (.31)
 	// 3rd (0),forward / back,Keep 0,—
-	const colliderPosition = useMemo(() => [0,.35 ,0])
+	const colliderPosition = useMemo(() => [0,.35 ,-.1])
 
 	return (
 		<>
 			<RigidBody ref={chassisRef} type='dynamic' position={spawnPosition}
 							rotation={spawnRotation} colliders={false} canSleep={false} linearDamping={0.05} angularDamping={1}>
-				<CuboidCollider args={colliderArgs} position={colliderPosition} mass={15} />
+				<CuboidCollider args={colliderArgs} position={colliderPosition} mass={10} />
 				<group ref={chassisGroupRef} name='Vehicle' scale={[SCALE, SCALE, SCALE]}>
 					<VehicleAudio />
 					<Suspense fallback={null}>
