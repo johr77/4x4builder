@@ -92,15 +92,15 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 
 	// Collider props
 	// colliderArgs
-	// 1st (0.9),half width,Left–right.
-	// 2nd (0.5),half height,Up–down. Full height = 1.0,
-	// 3rd (wheelbase / 2 + axleHeight),half length,Front–back,
+	// 1st (0.9),half width,Left–right.(.35)
+	// 2nd (0.5),half height,Up–down. Full height = 1.0,(.14)
+	// 3rd (wheelbase / 2 + axleHeight),half length,Front–back,(*.35)
 	// Bigger = nose/tail hit jumps and ramps sooner
 	const colliderArgs = useMemo(() => [.35,.14,(wheelbase / 2 + axleHeight) * .35], [wheelbase, axleHeight])
 	// colliderPosition
 	// 1st (0),left / right,Keep 0,—
-	// 2nd (1),up / down,Center of the box. 
-	// 3rd (0),forward / back,Keep 0,—
+	// 2nd (1),up / down,Center of the box. (.31)
+	// 3rd (0),forward / back,Keep 0,—(0.04)
 	const colliderPosition = useMemo(() => [0,.31 ,-0.04])
 
 	return (
