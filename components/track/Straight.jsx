@@ -6,7 +6,7 @@ import { SIZE, WALL } from './TrackConstants'
 import MudRoad from './MudRoad'
 import OuterWall from './OuterWall'
 
-const BERM_W = 4
+const BERM_W = 2
 const BERM_H = .2
 const STEP_N = 3
 const STEP_W = 1
