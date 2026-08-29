@@ -16,7 +16,7 @@ import WheelParticles from './WheelParticles'
 import TireTracks from './TireTracks'
 import Wheels from './Wheels'
 import VehicleBody from './VehicleBody'
-const SCALE = 0.250
+const SCALE = 1
 // Vehicle component with physics
 const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// Sync vehicle config changes to multiplayer server
@@ -101,7 +101,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// 1st (0),left / right,Keep 0,—
 	// 2nd (1),up / down,Center of the box. (.31)
 	// 3rd (0),forward / back,Keep 0,—(0.04)
-	const colliderPosition = useMemo(() => [0,.65 ,-0.04])
+	const colliderPosition = useMemo(() => [0,.1 ,-0.04])
 
 	return (
 		<>
