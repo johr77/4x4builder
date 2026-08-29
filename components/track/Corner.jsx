@@ -6,7 +6,7 @@ import { SIZE, LAYER_HEIGHT, WALL } from './TrackConstants'
 import MudRoad from './MudRoad'
 
 const BERM_W = 3
-const BERM_H = 1.0
+const BERM_H = .2
 const OUTER_R = SIZE - 0.22
 const OSEG = 12
 
@@ -166,15 +166,25 @@ export default function Corner({ position = [0, 0, 0], rotation = 0 }) {
 			/>
 			<CurvedFence cx={cx} cz={cz} radius={OUTER_R} />
 
-			{/* old inner pole — fills the 90° gap, no berm */}
+					{/* inner pole — up to fence top + direction arrow */}
 			<mesh position={[ix, 0.55, iz]} castShadow>
 				<cylinderGeometry args={[0.35, 0.35, 1.1, 16]} />
 				<meshStandardMaterial color='#1d4ed8' />
 			</mesh>
-			<mesh position={[ix, 1.15, iz]} castShadow>
-				<cylinderGeometry args={[0.12, 0.12, 2.3, 8]} />
+			<mesh position={[ix, 1.8, iz]} castShadow>
+				<cylinderGeometry args={[0.12, 0.12, 3.6, 8]} />
 				<meshStandardMaterial color='#f3f4f6' />
 			</mesh>
+			<group position={[ix, 3.55, iz]} rotation={[0, Math.PI / 4 + Math.PI, 0]}>
+				<mesh position={[0, 0, 0.55]} castShadow>
+					<boxGeometry args={[0.28, 0.18, 1.1]} />
+					<meshStandardMaterial color='#f5c518' metalness={0.2} roughness={0.4} />
+				</mesh>
+				<mesh position={[0, 0, 1.3]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+					<coneGeometry args={[0.42, 0.75, 4]} />
+					<meshStandardMaterial color='#f5c518' metalness={0.2} roughness={0.4} />
+				</mesh>
+			</group>
 			<RigidBody type='fixed' colliders={false}>
 				<CuboidCollider args={[0.35, 0.55, 0.35]} position={[ix, 0.55, iz]} />
 			</RigidBody>
