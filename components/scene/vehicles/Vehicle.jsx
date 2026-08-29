@@ -96,7 +96,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// 2nd (0.5),half height,Up–down. Full height = 1.0,
 	// 3rd (wheelbase / 2 + axleHeight),half length,Front–back,
 	// Bigger = nose/tail hit jumps and ramps sooner
-	const colliderArgs = useMemo(() => [.2,.2,(wheelbase / 2 + axleHeight) * .3], [wheelbase, axleHeight])
+	const colliderArgs = useMemo(() => [.5,.3,(wheelbase / 2 + axleHeight) * .3], [wheelbase, axleHeight])
 	// colliderPosition
 	// 1st (0),left / right,Keep 0,—
 	// 2nd (1),up / down,Center of the box. 
@@ -107,7 +107,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 		<>
 			<RigidBody ref={chassisRef} type='dynamic' position={spawnPosition}
 							rotation={spawnRotation} colliders={false} canSleep={false} linearDamping={0.05} angularDamping={1}>
-				<CuboidCollider args={colliderArgs} position={colliderPosition} mass={20} />
+				<CuboidCollider args={colliderArgs} position={colliderPosition} mass={10} />
 				<group ref={chassisGroupRef} name='Vehicle' scale={[SCALE, SCALE, SCALE]}>
 					<VehicleAudio />
 					<Suspense fallback={null}>
