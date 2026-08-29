@@ -7,7 +7,7 @@ import MudRoad from './MudRoad'
 import OuterWall from './OuterWall'
 
 const BERM_W = 3
-const BERM_H = 0.3
+const BERM_H = 0.2
 
 function useMudTextures() {
 	const [sand, sandNormal] = useLoader(TextureLoader, [
