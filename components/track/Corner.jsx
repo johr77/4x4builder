@@ -29,7 +29,7 @@ function CurvedBerm({ origin, yaw, cx, cz, innerR, outerR, highInner }) {
 	const geometry = useMemo(() => {
 		const geo = new RingGeometry(innerR, outerR, 32, 8, 0, Math.PI / 2)
 		geo.rotateX(-Math.PI / 2)
-		geo.rotateY(	Math.PI / 2)
+		geo.rotateY(Math.PI / 2)
 		const pos = geo.attributes.position
 		const uv = geo.attributes.uv
 		const colors = []
