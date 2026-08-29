@@ -56,7 +56,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 		position: new Vector3(...wheel.position),
 		suspensionDirection: new Vector3(0, -1, 0),
 		maxSuspensionTravel: 0.3,
-		suspensionRestLength: 0.1,
+		suspensionRestLength: 0.2,
 		//suspensionRestLength: 0.1,
 		suspensionStiffness: 5,
 		//suspensionStiffness: 28,
