@@ -10,7 +10,7 @@ const BERM_W = 2.3
 const BERM_H = 1.45
 const STEP_N = 2
 const STEP_W = 3.2
-const STEP_RISE = 1
+const STEP_RISE = 2
 
 function useMudTextures() {
 	const [sand, sandNormal] = useLoader(TextureLoader, [
@@ -70,7 +70,7 @@ function InnerBerm({ origin, yaw }) {
 
 function OuterSteps() {
 	const [sand, sandNormal] = useMudTextures()
-	const half = SIZE / 1
+	const half = SIZE / 2
 	const tread = STEP_W / STEP_N
 	const steps = []
 	for (let i = 0; i < STEP_N; i++) {
