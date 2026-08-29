@@ -101,7 +101,7 @@ const Vehicle = ({ spawnPosition = [0, 0, 0], spawnRotation = [0, 0, 0] }) => {
 	// 1st (0),left / right,Keep 0,—
 	// 2nd (1),up / down,Center of the box. (.31)
 	// 3rd (0),forward / back,Keep 0,—
-	const colliderPosition = useMemo(() => [0,.4 ,-.2])
+	const colliderPosition = useMemo(() => [0,.4 ,0])
 
 	return (
 		<>
