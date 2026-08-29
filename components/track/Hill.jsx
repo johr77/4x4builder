@@ -110,28 +110,14 @@ export default function Hill({ position = [0, 0, 0], rotation = 0, innerSign = 1
 				/>
 			</group>
 
-			<RigidBody type='fixed' colliders={false}>
-				<CuboidCollider
-					args={[0.12, 1.6, wallLen / 2]}
-					position={[innerFenceX, midY + 2.2, 0]}
-					rotation={[-wallAngle, 0, 0]}
-				/>
-				<CuboidCollider
-					args={[0.12, 1.6, wallLen / 2]}
-					position={[outerFenceX, midY + 2.2, 0]}
-					rotation={[-wallAngle, 0, 0]}
-				/>
+						<RigidBody type='fixed' colliders={false}>
+				<CuboidCollider args={[0.12, 1.6, half]} position={[innerFenceX, 2.2, 0]} />
+				<CuboidCollider args={[0.12, 1.6, half]} position={[outerFenceX, 2.2, 0]} />
 			</RigidBody>
-			<group
-				position={[innerFenceX, midY, 0]}
-				rotation={[-wallAngle, innerFenceX > 0 ? 0 : Math.PI, 0]}
-			>
+			<group position={[innerFenceX, 0, 0]} rotation={[0, innerFenceX > 0 ? 0 : Math.PI, 0]}>
 				<OuterWall />
 			</group>
-			<group
-				position={[outerFenceX, midY, 0]}
-				rotation={[-wallAngle, outerFenceX > 0 ? 0 : Math.PI, 0]}
-			>
+			<group position={[outerFenceX, 0, 0]} rotation={[0, outerFenceX > 0 ? 0 : Math.PI, 0]}>
 				<OuterWall />
 			</group>
 		</group>
