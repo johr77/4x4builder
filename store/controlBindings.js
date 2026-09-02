@@ -10,6 +10,7 @@ export const CONTROL_ACTIONS = [
 	{ id: 'reset', name: 'Reset' },
 	{ id: 'lights', name: 'Lights' },
 	{ id: 'cameraCycle', name: 'Change Camera' },
+	{ id: 'nitro', name: 'Nitro' },
 ]
 
 export const DEFAULT_BINDINGS = {
@@ -22,6 +23,7 @@ export const DEFAULT_BINDINGS = {
 	reset: { kind: 'button', index: 1, label: 'B', key: 'r' },
 	lights: { kind: 'key', key: 'l', label: 'L' },
 	cameraCycle: { kind: 'button', index: 3, label: 'Y', key: 'c' },
+	nitro: { kind: 'button', index: 0, label: 'A', key: 'n' },
 }
 
 export function getBindings() {

@@ -16,9 +16,11 @@ export const useVehicleInput = () => {
 	const lightsKeyPressedLastFrame = useRef(false)
 	// Track brake state to detect press (not hold)
 	const brakePressedLastFrame = useRef(false)
-
 	// Smoothed keyboard steering for lerping
 	const smoothedKeyboardSteering = useRef(0)
+	// Nitro
+	const nitroPressedLastFrame = useRef(false)
+	const nitroLeft = useRef(0)
 
 	/**
 	 * Get current vehicle input state
@@ -64,6 +66,16 @@ const brakeInput = clamp(
 
 		// Horn input (H key or left bumper) - continuous while held
 		const hornActive = !!input.horn
+		// Nitro input
+		const nitroPressed = !!input.nitro
+		if (nitroPressed && !nitroPressedLastFrame.current && nitroLeft.current <= 0) {
+			nitroLeft.current = 1.5
+		}
+		nitroPressedLastFrame.current = nitroPressed
+		if (nitroLeft.current > 0) {
+			nitroLeft.current = Math.max(0, nitroLeft.current - delta)
+		}
+		const nitroActive = nitroLeft.current > 0
 
 		// Calculate keyboard steering target (-1, 0, or 1)
 		const keyboardSteerTarget = (effectiveKeys.has('ArrowRight') || effectiveKeys.has('d') ? -1 : 0) + (effectiveKeys.has('ArrowLeft') || effectiveKeys.has('a') ? 1 : 0)
@@ -99,6 +111,7 @@ const brakeInput = clamp(
 			shouldReset,
 			shouldToggleLights,
 			hornActive,
+			nitroActive,
 			// Airborne controls
 			pitchInput,
 			rollInput,

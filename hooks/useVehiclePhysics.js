@@ -289,8 +289,7 @@ export const useVehiclePhysics = (vehicleRef, wheels) => {
 		}
 
 		// Get processed vehicle input
-		const { throttleInput, brakeInput, brakeJustPressed, steerInput, isDrifting, shouldReset, shouldToggleLights, pitchInput, rollInput, yawInput } = getVehicleInput(delta, forwardSpeed)
-
+		const { throttleInput, brakeInput, brakeJustPressed, steerInput, isDrifting, shouldReset, shouldToggleLights, hornActive, pitchInput, rollInput, yawInput, nitroActive } = getVehicleInput(delta, forwardSpeed)
 		// Handle reset
 		if (shouldReset) {
 			resetVehicle()
@@ -568,7 +567,8 @@ export const useVehiclePhysics = (vehicleRef, wheels) => {
 
 				// Combined force: base * throttle * torque curve * gear advantage
 				engineForce = FORCES.accelerate * throttleInput * torqueMultiplier * gearMultiplier
-						const maxSpeed = 200 / 3.6
+				if (nitroActive) engineForce *= 1.85
+				const maxSpeed = ((nitroActive ? 1.4 : 1) * 200) / 3.6
 		if (forwardSpeed >= maxSpeed) {
 			engineForce = 0
 		} else if (forwardSpeed > maxSpeed * 0.9) {

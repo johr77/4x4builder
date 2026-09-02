@@ -139,6 +139,7 @@ const InputManager = () => {
 		input.reset = read(bindings.reset) > 0.5
 		input.lights = read(bindings.lights) > 0.5
 		input.cameraCycle = read(bindings.cameraCycle) > 0.5
+		input.nitro = read(bindings.nitro) > 0.5
 		setInput(input)
 	})
 
