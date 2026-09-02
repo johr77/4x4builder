@@ -567,7 +567,7 @@ export const useVehiclePhysics = (vehicleRef, wheels) => {
 
 				// Combined force: base * throttle * torque curve * gear advantage
 				engineForce = FORCES.accelerate * throttleInput * torqueMultiplier * gearMultiplier
-				if (nitroActive) engineForce *= 3
+				if (nitroActive) engineForce *= 5
 				const maxSpeed = ((nitroActive ? 1.4 : 1) * 200) / 3.6
 		if (forwardSpeed >= maxSpeed) {
 			engineForce = 0

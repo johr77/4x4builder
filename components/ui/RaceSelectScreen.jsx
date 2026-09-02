@@ -39,6 +39,10 @@ export default function RaceSelectScreen() {
 				Race 1
 			</button>
 
+			<button style={btn} onClick={() => navigate('/taters/race/2')}>
+				Race 2
+			</button>
+
 			<button
 				onClick={() => navigate('/taters')}
 				style={{ ...btn, background: 'transparent', border: '1px solid #f4e6c855', color: '#f4e6c8' }}

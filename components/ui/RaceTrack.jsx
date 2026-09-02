@@ -6,7 +6,7 @@ import EnvMap from '../scene/environment/EnvMap'
 import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Vehicle from '../scene/vehicles/Vehicle'
 import CameraManager from '../scene/managers/CameraManager'
 import InputManager from '../scene/managers/InputManager'
@@ -80,6 +80,8 @@ function GuardrailFence({ size = 156 }) {
 const spawnZ = -((PARTS_ACROSS * SIZE) / 2) + SIZE / 2
 export default function RaceTrack() {
 	const navigate = useNavigate()
+	const { id } = useParams()
+	const race = Number(id) || 1
 
 	return (
 		<div style={{ width: '100%', height: '100vh', position: 'relative', background: '#1a1208' }}>
@@ -105,7 +107,7 @@ export default function RaceTrack() {
 					
 						<DirtGround />
                         <GuardrailFence />
-                        <TrackLoop />
+                        <TrackLoop race={race} />
 						</Physics>
 				</Suspense>
 			</Canvas>
@@ -137,7 +139,7 @@ export default function RaceTrack() {
 				>
 					Back
 				</button>
-				<div style={{ color: 'white', fontWeight: 700, textShadow: '0 1px 4px #000' }}>Race 1</div>
+				<div style={{ color: 'white', fontWeight: 700, textShadow: '0 1px 4px #000' }}>Race {race}</div>
 				<div />
 			</div>
 

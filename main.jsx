@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 				<Route path='/' element={<App />} />
 				<Route path='/taters' element={<TatersRacingScreen />} />
 				<Route path='/taters/races' element={<RaceSelectScreen />} />
-				<Route path='/taters/race/1' element={<RaceTrack />} />
+				<Route path='/taters/race/:id' element={<RaceTrack />} />
 				<Route path='/:slug' element={<App />} />
                 <Route path='/taters/settings' element={<SettingsScreen />} />
 			</Routes>

@@ -2,6 +2,7 @@ import Straight from './Straight'
 import Corner from './Corner'
 import Start from './Start'
 import Hill from './Hill'
+import Jump from './Jump'
 import { SIZE, PARTS_ACROSS, START_PEAK } from './TrackConstants'
 
 const pos = (i) => -((PARTS_ACROSS * SIZE) / 2) + SIZE / 2 + i * SIZE
@@ -51,6 +52,10 @@ const SPECIALS = {
 	'8,3': { type: 'hill', from: START_PEAK, to: 0 },
 	'8,2': { type: 'hill', from: 0, to: START_PEAK },
 }
+const SPECIALS_2 = {
+	...SPECIALS,
+	'1,6': { type: 'jump' },
+}
 
 function dirBetween(a, b) {
 	const dc = b[0] - a[0]
@@ -81,9 +86,11 @@ function innerSignFor(dOut) {
 	return -1
 }
 
-export default function TrackLoop() {
+export default function TrackLoop({ race = 1 }) {
+	const specials = race === 2 ? SPECIALS_2 : SPECIALS
 	const n = PATH.length
 	return PATH.map((curr, i) => {
+		
 		const prev = PATH[(i - 1 + n) % n]
 		const next = PATH[(i + 1) % n]
 		const dIn = dirBetween(prev, curr)
@@ -91,7 +98,7 @@ export default function TrackLoop() {
 		const [c, r] = curr
 		const position = [pos(c), 0, pos(r)]
 		const key = `${c},${r}`
-		const special = SPECIALS[key]
+		const special = specials[key]
 
 		if (dIn !== dOut) {
 			return <Corner key={key} position={position} rotation={cornerRot(dIn, dOut)} />
@@ -114,6 +121,9 @@ export default function TrackLoop() {
 					to={special.to}
 				/>
 			)
+		}
+				if (special?.type === 'jump') {
+			return <Jump key={key} position={position} rotation={rotation} innerSign={innerSign} />
 		}
 		return <Straight key={key} position={position} rotation={rotation} innerSign={innerSign} />
 	})
